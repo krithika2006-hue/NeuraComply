@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!-- Palo Alto Networks PAN-OS Configuration Export -->
+<!-- Model: PA-3220 -->
+<!-- Software Version: 10.2.4-h2 -->
+<config version="10.2.0" urldb="paloaltonetworks">
+  <mgt-config>
+    <users>
+      <entry name="admin">
+        <phash>$1$xyz$81726381273618273618273</phash>
+        <permissions>
+          <role-based>
+            <superuser>yes</superuser>
+          </role-based>
+        </permissions>
+      </entry>
+    </users>
+    <password-complexity>
+      <enabled>yes</enabled>
+      <minimum-length>14</minimum-length>
+    </password-complexity>
+  </mgt-config>
+  <shared>
+    <application/>
+    <service/>
+    <botnet/>
+  </shared>
+  <devices>
+    <entry name="localhost.localdomain">
+      <network>
+        <interface>
+          <ethernet>
+            <entry name="ethernet1/1">
+              <layer3>
+                <ip>
+                  <entry name="198.51.100.18/30"/>
+                </ip>
+              </layer3>
+            </entry>
+            <entry name="ethernet1/2">
+              <layer3>
+                <ip>
+                  <entry name="10.0.1.1/24"/>
+                </ip>
+              </layer3>
+            </entry>
+          </ethernet>
+        </interface>
+      </network>
+      <deviceconfig>
+        <system>
+          <type>
+            <static/>
+          </type>
+          <hostname>PA-3220-DATACENTER-01</hostname>
+          <ip-address>192.168.1.50</ip-address>
+          <netmask>255.255.255.0</netmask>
+          <default-gateway>192.168.1.1</default-gateway>
+          <dns-setting>
+            <servers>
+              <primary>10.100.1.10</primary>
+              <secondary>10.100.1.11</secondary>
+            </servers>
+          </dns-setting>
+          <timezone>US/Eastern</timezone>
+          <login-banner>WARNING: Unauthorized access to this system is strictly prohibited.</login-banner>
+          <update-schedule>
+            <threats>
+              <recurring>
+                <every-30-mins>
+                  <at>00</at>
+                  <action>download-and-install</action>
+                </every-30-mins>
+              </recurring>
+            </threats>
+          </update-schedule>
+          <service>
+            <disable-telnet>yes</disable-telnet>
+            <disable-http>no</disable-http>
+            <disable-snmp>no</disable-snmp>
+          </service>
+        </system>
+      </deviceconfig>
+    </entry>
+  </devices>
+</config>
