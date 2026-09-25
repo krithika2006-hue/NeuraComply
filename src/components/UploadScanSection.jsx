@@ -543,7 +543,7 @@ export default function UploadScanSection({
             </div>
             <div className={`scan-step ${scanStep >= 2 ? (scanStep > 2 ? 'completed' : 'active') : ''}`}>
               <CheckCircle2 size={14} />
-              <span>2. Constructing Canonical AST</span>
+              <span>2. Normalizing Security Intent to USS</span>
             </div>
             <div className={`scan-step ${scanStep >= 3 ? (scanStep > 3 ? 'completed' : 'active') : ''}`}>
               <CheckCircle2 size={14} />

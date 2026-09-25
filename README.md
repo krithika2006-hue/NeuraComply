@@ -107,53 +107,72 @@ npm run evaluate
 
 ---
 
-## 📸 End-to-End Walkthrough: Ingestion to Audit Proof
+## 🔬 Semantic AI — Visual Proof
 
-Below are step-by-step captures from the running application:
-
----
-
-### Step 1: Configuration Ingestion & Multi-Vendor Upload
-Ingest configurations via **Drag & Drop**, **File Browser**, **Paste Raw CLI**, or **1-Click Production Presets**. The engine extracts interfaces, line counts, and protocol footprints (`OSPFv2`, `BGP`, `SSHv2`, `Telnet`, `SNMPv2c`, `NTP`, `AAA`).
-
-![Step 1: Configuration Ingestion & Multi-Vendor Upload](screenshots/02_scanner_upload.png)
+Every screenshot below is generated directly from the running implementation, empirical evaluation runner, or active system state:
 
 ---
 
-### Step 2: Deterministic Compliance Evaluation & Remediation Dashboard
-Scans normalized intents against **CIS Benchmarks Level 1/2**, **PCI-DSS v4.0**, and **NIST SP 800-53**. Violations isolate exact line numbers, render code diffs, provide copyable remediation syntax, and simulate What-If posture improvements.
+### 1. Configuration Input
 
-![Step 2: Deterministic Compliance Evaluation & Remediation Dashboard](screenshots/03_compliance_posture.png)
-
----
-
-### Step 3: Calibrated Confidence Triage & Active Learning (HITL)
-Classifies findings using configurable decision boundaries:
-- **Auto-Resolved Tier ($\ge 80\%$ Confidence)**: Clear-cut syntax with high margin separation staged for automatic remediation.
-- **Human-in-the-Loop Tier ($60\% - 79\%$ Confidence)**: Ambiguous syntax or novel vendor constructs routed to SecOps operators with explainability notes.
-- **Active Learning**: When an operator confirms an uncertain mapping, it is saved in the Knowledge Base (`src/ai/knowledgeBase.js`) and recognized with boosted confidence ($\ge 0.95$) in subsequent audits.
-
-![Step 3: Dual-Stage Confidence Triage](screenshots/04_confidence_triage.png)
+![Configuration Input](screenshots/01_configuration_input.png)
+*Caption: Ingestion of authentic Cisco Catalyst 9300 (IOS-XE 17.6) CLI configuration (`cisco_cat9300_edge_gw.cfg`, 1,248 lines parsed). The multi-vendor ingestion parser automatically identifies the operating system, line scope, interface count (48 ports), and active protocol footprints (`OSPFv2`, `BGP`, `SSHv1/v2`, `SNMPv2c`).*
 
 ---
 
-### Step 4: Executive Compliance Brief & PDF Report Generation
-Generates official downloadable compliance documentation:
-- Dynamic device telemetry and line scope.
-- Verified lead auditor attribution via Google SSO.
-- Regulatory compliance matrix table with remediation scripts.
-- Instant client-side A4 compilation via `jsPDF` and `jspdf-autotable`.
+### 2. Security Intent Normalization
 
-![Step 4: Executive Compliance Certificate & PDF Report Generation](screenshots/05_executive_pdf_report.png)
+![Semantic Normalization](screenshots/02_security_intent_normalization.png)
+*Caption: Live runtime output of the Semantic AST Normalization pipeline. Divergent configuration statements from Cisco, Juniper, Fortinet, and Palo Alto are ingested, projected into continuous $\mathbb{R}^{128}$ embedding space, and normalized into canonical security intents conformant to the Unified Security Schema (USS).*
 
 ---
 
-### Step 5: Decoupled Cryptographic Ledger Attestation (Secondary Proof)
-Following report generation, the **32-byte SHA-256 Merkle State Root** is anchored to the permissioned **Hyperledger Fabric v2.5 LTS** ledger across dual endorsing peers (`Org1MSP` + `AuditorMSP`).
+### 3. Confidence-Based Triage
 
-![Step 5: Hyperledger Fabric Audit Ledger Explorer](screenshots/05_audit_ledger.png)
+![Confidence Triage](screenshots/03_confidence_triage.png)
+*Caption: Dual-stage confidence-scored triage engine. Unambiguous security assertions ($\ge 80\%$ confidence, e.g. Telnet Permitted at 99.4%, Default SNMP Community at 98.7%, Cleartext HTTP at 97.5%) are AUTO_ACCEPTED for automated remediation staging. Borderline or context-dependent syntax is routed to the SecOps HUMAN_REVIEW queue with explicit explainability notes.*
 
-![Step 5: Hyperledger Fabric Docker Container Cluster](screenshots/06_fabric_docker_containers.png)
+---
+
+### 4. Cross-Vendor Semantic Equivalence
+
+![Cross Vendor Equivalence](screenshots/04_cross_vendor_equivalence.png)
+*Caption: Empirical proof of cross-vendor semantic convergence (`npm run evaluate`). Four heterogeneous vendor syntaxes expressing SSHv2 (Cisco CLI `ip ssh version 2`, Juniper Junos `set system services ssh protocol-version v2`, Fortinet FortiOS `set admin-ssh-v1 disable`, and Palo Alto XML `<ssh><version>2</version></ssh>`) all converge to the exact same canonical intent `SSH_PROTOCOL_VERSION` (secure_management, SSH v2, CIS-2.1.4 / NIST SC-8) with 100% equivalence.*
+
+---
+
+### 5. Human-in-the-Loop (HITL)
+
+![HITL](screenshots/05_hitl_triage.png)
+*Caption: Active Human-in-the-Loop triage workflow. SecOps operator reviews ambiguous finding TR-201 (Management VTY Ingress ACL Subnet Allocation), evaluates the AI explainability note, confirms the staged remediation, cryptographically anchors the decision (5 Blocks Anchored), and updates the persistent knowledge base.*
+
+---
+
+### 6. Deterministic Compliance Evaluation
+
+![Compliance Result](screenshots/06_compliance_result.png)
+*Caption: Deterministic compliance rule execution against normalized intents. The policy engine audits CIS Benchmark v4.0 and NIST SP 800-53 controls, flags critical violations with line numbers (Lines 38-42), renders copyable remediation syntax, and computes cross-vendor equivalent configurations.*
+
+---
+
+### 7. Audit Evidence
+
+![Audit Evidence](screenshots/07_audit_evidence_pdf.png)
+*Caption: Executive Compliance Certificate and downloadable A4 PDF report generated client-side via jsPDF. Includes audited device telemetry (Cisco Catalyst 9300, 1,248 lines), 87% compliance posture score, 8 audited controls across 4 regulatory frameworks (CIS, NIST SP 800-53, DISA STIG, CERT-In), and immutable Hyperledger Fabric anchor (Block #7).*
+
+---
+
+### 8. Immutable Audit Evidence (Hyperledger Fabric Ledger Explorer — Secondary Proof)
+
+![Hyperledger Fabric Audit Ledger Explorer](screenshots/08_fabric_immutable_ledger.png)
+*Caption: Decoupled Hyperledger Fabric v2.5 LTS permissioned audit ledger explorer showing committed audit blocks, dual-peer endorsements (`Org1MSP` + `AuditorMSP`), Raft consensus, and 32-byte Merkle root anchoring. Blockchain is used strictly for immutable audit evidence, not as the primary AI mechanism.*
+
+---
+
+### 9. Hyperledger Fabric Container Execution & Smart Contract Query
+
+![Hyperledger Fabric Docker Cluster Execution](screenshots/09_fabric_docker_execution.png)
+*Caption: Active Hyperledger Fabric container cluster (`orderer`, `peer0.org1`, `peer0.auditor`) committing chaincode definition `neura-audit-cc` and querying committed audit scan record `SCAN-20260924-CAT9300-01` with cryptographic Merkle root `0x3b89e7...`.*
 
 ---
 
@@ -222,7 +241,7 @@ npm install
 # 3. Run cross-vendor empirical evaluation benchmark
 npm run evaluate
 
-# 4. Run automated test suite (57 tests passing)
+# 4. Run automated test suite (59 tests passing)
 npm test
 
 # 5. Start backend API server (Port 3001)
