@@ -1,0 +1,240 @@
+[
+  {
+    "id": "CV-001",
+    "vendor": "Cisco",
+    "configuration": "ip ssh version 2",
+    "expected_intent": "SSH_PROTOCOL_VERSION",
+    "security_property": "Enforce SSH version 2 protocol"
+  },
+  {
+    "id": "CV-002",
+    "vendor": "Juniper",
+    "configuration": "set system services ssh protocol-version v2",
+    "expected_intent": "SSH_PROTOCOL_VERSION",
+    "security_property": "Enforce SSH version 2 protocol"
+  },
+  {
+    "id": "CV-003",
+    "vendor": "Fortinet",
+    "configuration": "set admin-ssh-v1 disable",
+    "expected_intent": "SSH_PROTOCOL_VERSION",
+    "security_property": "Enforce SSH version 2 protocol by disabling v1"
+  },
+  {
+    "id": "CV-004",
+    "vendor": "Palo Alto",
+    "configuration": "<ssh><version>2</version></ssh>",
+    "expected_intent": "SSH_PROTOCOL_VERSION",
+    "security_property": "Enforce SSH version 2 protocol in XML schema"
+  },
+  {
+    "id": "CV-005",
+    "vendor": "Cisco",
+    "configuration": "no transport input telnet",
+    "expected_intent": "TELNET_DISABLED",
+    "security_property": "Disable cleartext Telnet on VTY lines"
+  },
+  {
+    "id": "CV-006",
+    "vendor": "Juniper",
+    "configuration": "delete system services telnet",
+    "expected_intent": "TELNET_DISABLED",
+    "security_property": "Disable cleartext Telnet management daemon"
+  },
+  {
+    "id": "CV-007",
+    "vendor": "Fortinet",
+    "configuration": "set admin-telnet disable",
+    "expected_intent": "TELNET_DISABLED",
+    "security_property": "Disable administrative Telnet daemon"
+  },
+  {
+    "id": "CV-008",
+    "vendor": "Palo Alto",
+    "configuration": "<disable-telnet>yes</disable-telnet>",
+    "expected_intent": "TELNET_DISABLED",
+    "security_property": "Disable Telnet in management services XML"
+  },
+  {
+    "id": "CV-009",
+    "vendor": "Cisco",
+    "configuration": "transport input telnet",
+    "expected_intent": "TELNET_ENABLED",
+    "security_property": "Permit cleartext Telnet (Risk)"
+  },
+  {
+    "id": "CV-010",
+    "vendor": "Juniper",
+    "configuration": "services { telnet; }",
+    "expected_intent": "TELNET_ENABLED",
+    "security_property": "Permit cleartext Telnet daemon (Risk)"
+  },
+  {
+    "id": "CV-011",
+    "vendor": "Fortinet",
+    "configuration": "set admin-telnet enable",
+    "expected_intent": "TELNET_ENABLED",
+    "security_property": "Permit cleartext Telnet admin access (Risk)"
+  },
+  {
+    "id": "CV-012",
+    "vendor": "Palo Alto",
+    "configuration": "<disable-telnet>no</disable-telnet>",
+    "expected_intent": "TELNET_ENABLED",
+    "security_property": "Permit Telnet via XML negative flag (Risk)"
+  },
+  {
+    "id": "CV-013",
+    "vendor": "Cisco",
+    "configuration": "snmp-server community public RO",
+    "expected_intent": "SNMP_INSECURE_COMMUNITY_ACTIVE",
+    "security_property": "Well-known default public SNMP string (Risk)"
+  },
+  {
+    "id": "CV-014",
+    "vendor": "Juniper",
+    "configuration": "community public { authorization read-only; }",
+    "expected_intent": "SNMP_INSECURE_COMMUNITY_ACTIVE",
+    "security_property": "Well-known default public SNMP string (Risk)"
+  },
+  {
+    "id": "CV-015",
+    "vendor": "Fortinet",
+    "configuration": "set name \"public\"",
+    "expected_intent": "SNMP_INSECURE_COMMUNITY_ACTIVE",
+    "security_property": "Well-known default public SNMP string (Risk)"
+  },
+  {
+    "id": "CV-016",
+    "vendor": "Cisco",
+    "configuration": "no snmp-server community public",
+    "expected_intent": "SNMP_INSECURE_COMMUNITY_DISABLED",
+    "security_property": "Negation of insecure default SNMP community"
+  },
+  {
+    "id": "CV-017",
+    "vendor": "Juniper",
+    "configuration": "delete snmp community public",
+    "expected_intent": "SNMP_INSECURE_COMMUNITY_DISABLED",
+    "security_property": "Deletion of insecure default SNMP community"
+  },
+  {
+    "id": "CV-018",
+    "vendor": "Cisco",
+    "configuration": "ip http server",
+    "expected_intent": "HTTP_CLEARTEXT_ACTIVE",
+    "security_property": "Cleartext HTTP server daemon enabled (Risk)"
+  },
+  {
+    "id": "CV-019",
+    "vendor": "Juniper",
+    "configuration": "web-management { http { interface ge-0/0/0.0; } }",
+    "expected_intent": "HTTP_CLEARTEXT_ACTIVE",
+    "security_property": "Cleartext HTTP web management enabled (Risk)"
+  },
+  {
+    "id": "CV-020",
+    "vendor": "Fortinet",
+    "configuration": "set admin-sport 80",
+    "expected_intent": "HTTP_CLEARTEXT_ACTIVE",
+    "security_property": "Plaintext port 80 for admin portal (Risk)"
+  },
+  {
+    "id": "CV-021",
+    "vendor": "Palo Alto",
+    "configuration": "<disable-http>no</disable-http>",
+    "expected_intent": "HTTP_CLEARTEXT_ACTIVE",
+    "security_property": "Plaintext HTTP permitted in XML config (Risk)"
+  },
+  {
+    "id": "CV-022",
+    "vendor": "Cisco",
+    "configuration": "no ip http server",
+    "expected_intent": "HTTP_CLEARTEXT_DISABLED",
+    "security_property": "Cleartext HTTP server disabled"
+  },
+  {
+    "id": "CV-023",
+    "vendor": "Fortinet",
+    "configuration": "set admin-sport 443",
+    "expected_intent": "HTTP_CLEARTEXT_DISABLED",
+    "security_property": "TLS port 443 enforced for administrative portal"
+  },
+  {
+    "id": "CV-024",
+    "vendor": "Palo Alto",
+    "configuration": "<disable-http>yes</disable-http>",
+    "expected_intent": "HTTP_CLEARTEXT_DISABLED",
+    "security_property": "Plaintext HTTP disabled in XML schema"
+  },
+  {
+    "id": "CV-025",
+    "vendor": "Cisco",
+    "configuration": "password algorithm scrypt",
+    "expected_intent": "PASSWORD_ENCRYPTION_ENFORCED",
+    "security_property": "Irreversible scrypt password hashing algorithm"
+  },
+  {
+    "id": "CV-026",
+    "vendor": "Palo Alto",
+    "configuration": "<password-complexity><enabled>yes</enabled><minimum-length>14</minimum-length></password-complexity>",
+    "expected_intent": "PASSWORD_ENCRYPTION_ENFORCED",
+    "security_property": "Administrative password complexity requirements enforced"
+  },
+  {
+    "id": "CV-027",
+    "vendor": "Cisco",
+    "configuration": "exec-timeout 15 0",
+    "expected_intent": "SESSION_INACTIVITY_TIMEOUT",
+    "security_property": "Administrative console idle session timeout"
+  },
+  {
+    "id": "CV-028",
+    "vendor": "Fortinet",
+    "configuration": "set admintimeout 15",
+    "expected_intent": "SESSION_INACTIVITY_TIMEOUT",
+    "security_property": "Administrative console idle session timeout"
+  },
+  {
+    "id": "CV-029",
+    "vendor": "Cisco",
+    "configuration": "banner login ^C NOTICE RESTRICTED PERSONNEL ^C",
+    "expected_intent": "STATUTORY_BANNER_ENFORCED",
+    "security_property": "Statutory legal warning banner before login"
+  },
+  {
+    "id": "CV-030",
+    "vendor": "Palo Alto",
+    "configuration": "<login-banner>WARNING: Unauthorized access to this system is strictly prohibited.</login-banner>",
+    "expected_intent": "STATUTORY_BANNER_ENFORCED",
+    "security_property": "Statutory legal warning banner in XML schema"
+  },
+  {
+    "id": "CV-031",
+    "vendor": "Cisco",
+    "configuration": "access-class VTY-PROTECT-ACL in",
+    "expected_intent": "INGRESS_MANAGEMENT_ACL_ENFORCED",
+    "security_property": "Inbound management plane restricted via access list"
+  },
+  {
+    "id": "CV-032",
+    "vendor": "Fortinet",
+    "configuration": "set trusthost1 10.100.1.0 255.255.255.0",
+    "expected_intent": "INGRESS_MANAGEMENT_ACL_ENFORCED",
+    "security_property": "Inbound administrative host restriction"
+  },
+  {
+    "id": "CV-033",
+    "vendor": "Allied Telesis",
+    "configuration": "service ssh version 2",
+    "expected_intent": "SSH_PROTOCOL_VERSION",
+    "security_property": "Novel vendor SSH syntax testing HITL / Knowledge Base hit"
+  },
+  {
+    "id": "CV-034",
+    "vendor": "Unknown",
+    "configuration": "interface Loopback0 description MANAGEMENT-INTERFACE-ONLY",
+    "expected_intent": "UNMAPPED_CONFIGURATION",
+    "security_property": "Interface configuration without security compliance policy intent"
+  }
+]

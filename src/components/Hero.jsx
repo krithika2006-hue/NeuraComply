@@ -20,14 +20,14 @@ export default function Hero({ onLaunchScanner, onLoadPreset }) {
             </div>
 
             <h1 className="hero-title">
-              Compliance across every vendor. <br />
+              Compliance across multi-vendor networks. <br />
               <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>
                 One unified posture.
               </span>
             </h1>
 
             <p className="hero-subtitle">
-              Any vendor’s configuration — Cisco, Juniper, Fortinet, or Palo Alto — automatically normalized into an abstracted semantic AST and rigorously validated against CIS Benchmarks, NIST SP 800-53, and DISA STIG.
+              Multi-vendor configurations — Cisco, Juniper, Fortinet, and Palo Alto — normalized into canonical security intents (Unified Security Schema) and validated against CIS Benchmarks and NIST SP 800-53.
             </p>
 
             <div className="hero-cta-group">

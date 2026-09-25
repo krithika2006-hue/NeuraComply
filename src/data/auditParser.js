@@ -1,5 +1,6 @@
 // Real-time Parser and Deterministic AST Compliance Evaluator for Ingested Configs
 import { AUDIT_CONTROLS } from './mockData.js';
+import { normalizeSecurityIntent } from '../ai/semanticEngine.js';
 
 // Simple fast SHA-256 hex string generator using Web Crypto API or fallback
 export async function generateChecksum(text) {
@@ -100,6 +101,25 @@ export function evaluateRealConfig(fileName, content, checksum) {
   const lines = content.split('\n');
   const lineCount = lines.length;
   const interfacesDetected = countInterfaces(content);
+
+  // Extract normalized security intents across lines via Semantic AI
+  const normalizedIntents = [];
+  const seenIntents = new Set();
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('!') || trimmed.startsWith('#')) continue;
+    const norm = normalizeSecurityIntent(trimmed, vendor);
+    if (norm && norm.confidence >= 0.75 && norm.security_intent !== 'UNMAPPED_CONFIGURATION' && !seenIntents.has(norm.security_intent)) {
+      seenIntents.add(norm.security_intent);
+      normalizedIntents.push({
+        intent: norm.security_intent,
+        category: norm.normalized_intent?.category,
+        confidence: norm.confidence,
+        status: norm.status,
+        raw_config: trimmed
+      });
+    }
+  }
 
   // Analyze each control
   const evaluatedControls = AUDIT_CONTROLS.map(baseControl => {
@@ -256,6 +276,7 @@ export function evaluateRealConfig(fileName, content, checksum) {
       controlsPassed: passedCount,
       controlsWarning: warningCount,
       controlsViolation: violationCount,
+      normalizedIntents,
       fileName: fileName || 'uploaded_config.cfg',
       rawSnippet: content.slice(0, 3500),
       fullContent: content
