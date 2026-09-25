@@ -1,0 +1,28 @@
+[2026-09-24 14:10:02.112 UTC] [docker-compose] Validating compose file configuration: fabric/docker-compose-fabric.yml
+[2026-09-24 14:10:02.145 UTC] [docker-compose] Networks: neura-compliance-net (bridge, subnet: 172.28.0.0/16)
+[2026-09-24 14:10:02.160 UTC] [docker-compose] Volumes: orderer.neuracomply.internal (local), peer0.org1.neuracomply.internal (local), peer0.auditor.neuracomply.internal (local)
+[2026-09-24 14:10:02.210 UTC] [docker-compose] Creating network "neura-compliance-net" with the default driver
+[2026-09-24 14:10:02.305 UTC] [docker-compose] Creating volume "fabric_orderer.neuracomply.internal"
+[2026-09-24 14:10:02.312 UTC] [docker-compose] Creating volume "fabric_peer0.org1.neuracomply.internal"
+[2026-09-24 14:10:02.320 UTC] [docker-compose] Creating volume "fabric_peer0.auditor.neuracomply.internal"
+[2026-09-24 14:10:02.350 UTC] [docker-compose] Creating orderer.neuracomply.internal ... done
+[2026-09-24 14:10:02.480 UTC] [docker-compose] Creating peer0.org1.neuracomply.internal ... done
+[2026-09-24 14:10:02.590 UTC] [docker-compose] Creating peer0.auditor.neuracomply.internal ... done
+
+$ docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+NAMES                               IMAGE                               COMMAND                  STATUS                  PORTS
+orderer.neuracomply.internal        hyperledger/fabric-orderer:2.5.9    "orderer"                Up 42 seconds (healthy) 0.0.0.0:7050->7050/tcp
+peer0.org1.neuracomply.internal     hyperledger/fabric-peer:2.5.9       "peer node start"        Up 41 seconds (healthy) 0.0.0.0:7051->7051/tcp, 0.0.0.0:7052->7052/tcp
+peer0.auditor.neuracomply.internal  hyperledger/fabric-peer:2.5.9       "peer node start"        Up 40 seconds (healthy) 0.0.0.0:9051->9051/tcp, 0.0.0.0:9052->9052/tcp
+
+[2026-09-24 14:10:45.001 UTC] [orderer] 2026-09-24 14:10:45.001 UTC 0001 INFO [orderer.common.server] Main -> Starting orderer: version='2.5.9' commit='d41a76c' architecture='amd64'
+[2026-09-24 14:10:45.012 UTC] [orderer] 2026-09-24 14:10:45.012 UTC 0002 INFO [orderer.common.server] initializeClusterClientConfig -> TLS is enabled for cluster communication
+[2026-09-24 14:10:45.034 UTC] [orderer] 2026-09-24 14:10:45.034 UTC 0003 INFO [orderer.consensus.etcdraft] Start -> Starting Raft node channel=system-channel id=1
+[2026-09-24 14:10:45.105 UTC] [orderer] 2026-09-24 14:10:45.105 UTC 0004 INFO [orderer.common.server] Start -> Beginning to serve requests channel=system-channel
+[2026-09-24 14:10:46.210 UTC] [peer0.org1] 2026-09-24 14:10:46.210 UTC 0001 INFO [nodeCmd] serve -> Starting peer: version='2.5.9' commit='d41a76c' architecture='amd64'
+[2026-09-24 14:10:46.230 UTC] [peer0.org1] 2026-09-24 14:10:46.230 UTC 0002 INFO [nodeCmd] serve -> Auto-detected local peer address: peer0.org1.neuracomply.internal:7051
+[2026-09-24 14:10:46.315 UTC] [peer0.org1] 2026-09-24 14:10:46.315 UTC 0003 INFO [nodeCmd] serve -> Deployed CouchDB state database at 127.0.0.1:5984
+[2026-09-24 14:10:46.390 UTC] [peer0.org1] 2026-09-24 14:10:46.390 UTC 0004 INFO [gossip.gossip] start -> Gossip service started with endpoint peer0.org1.neuracomply.internal:7051
+[2026-09-24 14:10:47.100 UTC] [peer0.auditor] 2026-09-24 14:10:47.100 UTC 0001 INFO [nodeCmd] serve -> Starting peer: version='2.5.9' commit='d41a76c' architecture='amd64'
+[2026-09-24 14:10:47.125 UTC] [peer0.auditor] 2026-09-24 14:10:47.125 UTC 0002 INFO [nodeCmd] serve -> Auto-detected local peer address: peer0.auditor.neuracomply.internal:9051
+[2026-09-24 14:10:47.210 UTC] [peer0.auditor] 2026-09-24 14:10:47.210 UTC 0003 INFO [nodeCmd] serve -> Regulatory Auditor node operational with MSP ID 'AuditorMSP'

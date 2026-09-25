@@ -1,5 +1,5 @@
 // Real-time Parser and Deterministic AST Compliance Evaluator for Ingested Configs
-import { AUDIT_CONTROLS } from './mockData';
+import { AUDIT_CONTROLS } from './mockData.js';
 
 // Simple fast SHA-256 hex string generator using Web Crypto API or fallback
 export async function generateChecksum(text) {
@@ -132,13 +132,23 @@ export function evaluateRealConfig(fileName, content, checksum) {
       }
     } else if (ctrl.id === 'CIS-1.2.1') {
       // Default SNMP community "public" / "private"
-      const hasPublicSnmp = contentLower.includes('community public') ||
-                            contentLower.includes('community private') ||
-                            contentLower.includes('name "public"') ||
-                            contentLower.includes('name "private"');
+      // Exclude negated commands (e.g., "no snmp-server community public")
+      const activePublicSnmpLine = lines.find(l => {
+        const trimmed = l.trim().toLowerCase();
+        return !trimmed.startsWith('no ') && !trimmed.startsWith('!') && (
+          trimmed.includes('community public') ||
+          trimmed.includes('community private') ||
+          trimmed.includes('name "public"') ||
+          trimmed.includes('name "private"')
+        );
+      });
+      const hasPublicSnmp = !!activePublicSnmpLine;
       if (hasPublicSnmp) {
         ctrl.status = 'violation';
-        const lineIdx = lines.findIndex(l => l.toLowerCase().includes('community public') || l.toLowerCase().includes('name "public"'));
+        const lineIdx = lines.findIndex(l => {
+          const trimmed = l.trim().toLowerCase();
+          return !trimmed.startsWith('no ') && (trimmed.includes('community public') || trimmed.includes('name "public"'));
+        });
         if (lineIdx !== -1) {
           ctrl.offendingSnippet = {
             lineStart: Math.max(1, lineIdx),

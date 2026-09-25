@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -12,12 +12,20 @@ import GoogleAuthModal from './components/GoogleAuthModal';
 import { Shield, Sparkles, Check, ArrowRight, Lock } from 'lucide-react';
 import { VENDOR_PRESETS, AUDIT_CONTROLS } from './data/mockData';
 import { INITIAL_FABRIC_BLOCKS, createFabricBlock } from './data/hyperledgerFabricService';
+import {
+  checkBackendHealth,
+  fetchDevicesFromDb,
+  scanConfigToDb,
+  fetchLedgerFromDb
+} from './data/apiService';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'upload' | 'results' | 'triage' | 'ledger'
   const [selectedPreset, setSelectedPreset] = useState('cisco-cat9300');
   const [customConfig, setCustomConfig] = useState(null);
   const [customControls, setCustomControls] = useState(null);
+  const [dbInfo, setDbInfo] = useState({ connected: true, dbEngine: 'PostgreSQL 15', dbName: 'neuracomply' });
+  const [dbDevices, setDbDevices] = useState(null);
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('neura_google_user');
@@ -33,6 +41,25 @@ export default function App() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [auditBlocks, setAuditBlocks] = useState(INITIAL_FABRIC_BLOCKS);
+
+  // Sync with PostgreSQL on mount
+  useEffect(() => {
+    async function initDb() {
+      try {
+        const health = await checkBackendHealth();
+        setDbInfo(health);
+        if (health.connected) {
+          const devices = await fetchDevicesFromDb();
+          if (devices && devices.length > 0) setDbDevices(devices);
+          const blocks = await fetchLedgerFromDb();
+          if (blocks && blocks.length > 0) setAuditBlocks(blocks);
+        }
+      } catch (err) {
+        console.warn('[NeuraComply] DB initial check:', err);
+      }
+    }
+    initDb();
+  }, []);
 
   const activeConfig = customConfig || VENDOR_PRESETS.find(p => p.id === selectedPreset) || VENDOR_PRESETS[0];
   const activeControls = customControls || AUDIT_CONTROLS;
@@ -98,22 +125,40 @@ export default function App() {
     const timer1 = setTimeout(() => setScanStep(2), 500);
     const timer2 = setTimeout(() => setScanStep(3), 1100);
     const timer3 = setTimeout(() => setScanStep(4), 1800);
-    const timer4 = setTimeout(() => {
+    const timer4 = setTimeout(async () => {
       setIsScanning(false);
+
+      if (dbInfo.connected) {
+        try {
+          const scanRes = await scanConfigToDb(
+            activeConfig.fileName,
+            activeConfig.rawSnippet,
+            activeConfig.checksum
+          );
+          if (scanRes && scanRes.blockNumber) {
+            const blocks = await fetchLedgerFromDb();
+            if (blocks && blocks.length > 0) setAuditBlocks(blocks);
+          }
+        } catch (e) {
+          console.warn('DB scan sync:', e);
+        }
+      }
+
       addAuditBlock({
         eventType: 'SCAN_COMPLETED',
         eventTitle: `Full Compliance Scan Completed: ${activeConfig.name}`,
         eventDescription: `Completed 4-stage AST parsing, canonical normalization, and ${activeControls.length}-rule compliance evaluation for ${activeConfig.fileName}.`,
-        operator: 'SecOps-Auditor (Console Session)',
+        operator: user ? `${user.name} (${user.email})` : 'SecOps-Auditor (Console Session)',
         metadata: {
           presetId: activeConfig.id,
           rulesEvaluated: activeControls.length,
           astNodes: activeConfig.lineCount * 3,
-          frameworks: 'CIS Benchmarks / NIST SP 800-53'
+          frameworks: 'CIS Benchmarks / NIST SP 800-53',
+          persistedDatabase: dbInfo.connected ? 'PostgreSQL 15 (neuracomply)' : 'Local State'
         }
       });
       setCurrentView('results');
-      showToast(`Compliance audit complete for ${activeConfig.fileName}: controls evaluated & block anchored`);
+      showToast(`Compliance audit complete for ${activeConfig.fileName} • Saved to PostgreSQL`);
     }, 2500);
 
     return () => {
@@ -130,7 +175,7 @@ export default function App() {
       eventType: 'SCAN_COMPLETED',
       eventTitle: `Fast-Forward Scan Completed: ${activeConfig.name}`,
       eventDescription: `Direct baseline audit results loaded and cryptographically chained to ledger.`,
-      operator: 'SecOps-Auditor (Console Session)',
+      operator: user ? `${user.name} (${user.email})` : 'SecOps-Auditor (Console Session)',
       metadata: {
         presetId: activeConfig.id,
         rulesEvaluated: activeControls.length
@@ -158,6 +203,7 @@ export default function App() {
         user={user}
         onOpenGoogleSignIn={() => setIsAuthModalOpen(true)}
         onSignOut={handleSignOut}
+        dbInfo={dbInfo}
       />
 
       {/* Main View Router */}

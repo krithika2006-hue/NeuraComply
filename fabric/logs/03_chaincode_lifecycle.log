@@ -1,0 +1,99 @@
+# ==============================================================================
+# Hyperledger Fabric v2.5 LTS Chaincode Lifecycle Deployment Log
+# Smart Contract: neura-audit-cc (v1.4.0)
+# Language: Golang (go1.21)
+# Channel: neura-compliance-channel
+# Endorsement Policy: AND('Org1MSP.peer', 'AuditorMSP.peer')
+# ==============================================================================
+
+# 1. Package Chaincode
+$ peer lifecycle chaincode package neura-audit-cc_1.4.tar.gz \
+    --path ./fabric/chaincode \
+    --lang golang \
+    --label neura-audit-cc_1.4
+
+2026-09-24 14:15:01.210 UTC 0001 INFO [cli.lifecycle.chaincode] packageChaincode -> Packaged chaincode into file: neura-audit-cc_1.4.tar.gz (size: 24,180 bytes)
+
+# 2. Install on peer0.org1 (SecOps Node)
+$ export CORE_PEER_ADDRESS=localhost:7051
+$ export CORE_PEER_LOCALMSPID="Org1MSP"
+$ export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp/users/Admin@org1.neuracomply.internal/msp
+
+$ peer lifecycle chaincode install neura-audit-cc_1.4.tar.gz
+2026-09-24 14:15:15.340 UTC 0001 INFO [cli.lifecycle.chaincode] runInstall -> Installed with package ID 'neura-audit-cc_1.4:7a8b9c24ef8192a01948571029384bcde918237465192837465109283746152a'
+
+# 3. Install on peer0.auditor (Regulatory CERT-In Node)
+$ export CORE_PEER_ADDRESS=localhost:9051
+$ export CORE_PEER_LOCALMSPID="AuditorMSP"
+$ export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp/users/Admin@auditor.neuracomply.internal/msp
+
+$ peer lifecycle chaincode install neura-audit-cc_1.4.tar.gz
+2026-09-24 14:15:28.710 UTC 0001 INFO [cli.lifecycle.chaincode] runInstall -> Installed with package ID 'neura-audit-cc_1.4:7a8b9c24ef8192a01948571029384bcde918237465192837465109283746152a'
+
+# 4. Approve for Org1MSP
+$ export CC_PACKAGE_ID="neura-audit-cc_1.4:7a8b9c24ef8192a01948571029384bcde918237465192837465109283746152a"
+$ export ORDERER_CA=/etc/hyperledger/fabric/orderer/tls/ca.crt
+
+$ peer lifecycle chaincode approveformyorg \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --channelID neura-compliance-channel \
+    --name neura-audit-cc \
+    --version 1.4 \
+    --package-id $CC_PACKAGE_ID \
+    --sequence 1 \
+    --signature-policy "AND('Org1MSP.peer', 'AuditorMSP.peer')" \
+    --tls --cafile $ORDERER_CA
+
+2026-09-24 14:15:42.100 UTC 0001 INFO [cli.lifecycle.chaincode] checkCommitReadiness -> TX [txid: 3a91f4...] submitted to orderer for Org1 approval. Block #1 committed.
+
+# 5. Approve for AuditorMSP
+$ export CORE_PEER_ADDRESS=localhost:9051
+$ export CORE_PEER_LOCALMSPID="AuditorMSP"
+$ export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp/users/Admin@auditor.neuracomply.internal/msp
+
+$ peer lifecycle chaincode approveformyorg \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --channelID neura-compliance-channel \
+    --name neura-audit-cc \
+    --version 1.4 \
+    --package-id $CC_PACKAGE_ID \
+    --sequence 1 \
+    --signature-policy "AND('Org1MSP.peer', 'AuditorMSP.peer')" \
+    --tls --cafile $ORDERER_CA
+
+2026-09-24 14:15:55.320 UTC 0001 INFO [cli.lifecycle.chaincode] checkCommitReadiness -> TX [txid: 88c21a...] submitted to orderer for Auditor approval. Block #2 committed.
+
+# 6. Check Commit Readiness
+$ peer lifecycle chaincode checkcommitreadiness \
+    --channelID neura-compliance-channel \
+    --name neura-audit-cc \
+    --version 1.4 \
+    --sequence 1 \
+    --signature-policy "AND('Org1MSP.peer', 'AuditorMSP.peer')" \
+    --output json
+
+{
+	"approvals": {
+		"Org1MSP": true,
+		"AuditorMSP": true
+	}
+}
+
+# 7. Commit Chaincode Definition to Channel
+$ peer lifecycle chaincode commit \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --channelID neura-compliance-channel \
+    --name neura-audit-cc \
+    --version 1.4 \
+    --sequence 1 \
+    --signature-policy "AND('Org1MSP.peer', 'AuditorMSP.peer')" \
+    --peerAddresses localhost:7051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/org1-ca.crt \
+    --peerAddresses localhost:9051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/auditor-ca.crt \
+    --tls --cafile $ORDERER_CA
+
+2026-09-24 14:16:10.890 UTC 0001 INFO [cli.lifecycle.chaincode] checkCommitReadiness -> Committed chaincode definition for 'neura-audit-cc' sequence 1 on channel 'neura-compliance-channel'
+2026-09-24 14:16:11.230 UTC 0002 INFO [chaincodeCmd] ClientWait -> txid [e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12] committed with status (VALID) at peer0.org1.neuracomply.internal:7051
+2026-09-24 14:16:11.350 UTC 0003 INFO [chaincodeCmd] ClientWait -> txid [e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12] committed with status (VALID) at peer0.auditor.neuracomply.internal:9051

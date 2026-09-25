@@ -117,7 +117,7 @@ export const INITIAL_FABRIC_BLOCKS = [
     operator: 'Krithika S. (krithika.secops@gmail.com)',
     mspId: 'Org1MSP',
     payloadHash: 'b231fa8820c746e01a88b2094c8e71549420b83e4088001e792c3983f4b82931',
-    previousBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
+    previousBlockHash: 'b231fa8820c746e01a88b2094c8e71549420b83e4088001e792c3983f4b82931',
     currentBlockHash: '8f3c1b9942a1705e3db1c527e0294da9c31405b6329ef31a78c1b4802e8412af',
     endorsingPeers: [
       { peer: 'peer0.secops.defense.gov', msp: 'Org1MSP', status: 'ENDORSED_200' },
@@ -148,9 +148,10 @@ export const INITIAL_FABRIC_BLOCKS = [
     mspId: 'Org1MSP',
     payloadHash: 'fe92100cb4817263819283719283719283719283719283719283719283719109',
     previousBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
-    currentBlockHash: '0xb231fa8820c746e01a88b2094c8e71549420b83e4088001e792c3983f4b82931',
+    currentBlockHash: 'b231fa8820c746e01a88b2094c8e71549420b83e4088001e792c3983f4b82931',
     endorsingPeers: [
-      { peer: 'peer0.secops.defense.gov', msp: 'Org1MSP', status: 'ENDORSED_200' }
+      { peer: 'peer0.secops.defense.gov', msp: 'Org1MSP', status: 'ENDORSED_200' },
+      { peer: 'peer0.auditor.certin.gov', msp: 'AuditorMSP', status: 'ENDORSED_200' }
     ],
     readWriteSet: {
       readKeys: [],

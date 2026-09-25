@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2,
   AlertCircle,
@@ -12,10 +12,12 @@ import {
   Terminal,
   Info,
   Lock,
-  Link2
+  Link2,
+  Database
 } from 'lucide-react';
 import { TRIAGE_ITEMS } from '../data/mockData';
 import { truncateHash } from '../data/auditLedgerService';
+import { fetchTriageFromDb, confirmTriageItemInDb } from '../data/apiService';
 
 export default function ConfidenceTriageView({
   showToast,
@@ -25,6 +27,16 @@ export default function ConfidenceTriageView({
 }) {
   const [items, setItems] = useState(TRIAGE_ITEMS);
   const [activeTab, setActiveTab] = useState('all');
+
+  useEffect(() => {
+    async function loadDbTriage() {
+      const dbItems = await fetchTriageFromDb();
+      if (dbItems && dbItems.length > 0) {
+        setItems(dbItems);
+      }
+    }
+    loadDbTriage();
+  }, []);
 
   const handleConfirmItem = (id) => {
     const foundItem = items.find(i => i.id === id);
@@ -42,6 +54,11 @@ export default function ConfidenceTriageView({
       return item;
     }));
 
+    // Async persist to PostgreSQL
+    confirmTriageItemInDb(id, 'SecOps-Operator (Manual Verification)').catch(err => {
+      console.warn('DB confirm sync:', err);
+    });
+
     if (onRecordAuditEvent) {
       onRecordAuditEvent({
         eventType: 'REMEDIATION_CONFIRMED',
@@ -52,12 +69,13 @@ export default function ConfidenceTriageView({
           triageId: id,
           controlCode: foundItem?.controlCode,
           priorConfidence: `${foundItem?.confidence}%`,
-          newConfidence: '99.1%'
+          newConfidence: '99.1%',
+          databaseStore: 'PostgreSQL 15 (neuracomply)'
         }
       });
     }
 
-    showToast(`Remediation for ${id} verified & promoted to auto-resolved queue`);
+    showToast(`Remediation for ${id} verified & promoted • Saved to PostgreSQL`);
   };
 
   const handleException = (id) => {

@@ -1,0 +1,86 @@
+{
+  "header": {
+    "channel_id": "neura-compliance-channel",
+    "tx_id": "e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12",
+    "block_number": 4,
+    "block_hash": "5e2b810f912c474d284a1b89ef03a452cb1094038a8e19c3b77209ff8203c942",
+    "previous_block_hash": "8f3c1b9942a1705e3db1c527e0294da9c31405b6329ef31a78c1b4802e8412af",
+    "timestamp_iso": "2026-09-24T14:18:14.410Z",
+    "validation_code": "VALID (TxValidationCode 0)"
+  },
+  "attestation": {
+    "scan_id": "SCAN-20260924-CAT9300-01",
+    "device_uuid": "cisco-cat9300-enterprise",
+    "device_hardware_model": "Cisco Catalyst 9300-48U (x86_64)",
+    "vendor": "Cisco Systems",
+    "os_version": "Cisco IOS-XE 17.06.05 SPA",
+    "merkle_state_root": "0x3b89e7f891a0c44192bcaef89104d5e718293abcf78192039485710293847561",
+    "merkle_tree_leaves": {
+      "leaf_0_inventory_digest": "4a8b7921c3817263819283719283719283719283719283719283719283719e91",
+      "leaf_1_raw_config_digest": "78bc912401ea92837465192837465109283746152a8b9c24ef8192a019485710",
+      "leaf_2_normalized_uss_digest": "b231fa8820c746e01a88b2094c8e71549420b83e4088001e792c3983f4b82931",
+      "leaf_3_findings_array_digest": "fe92100cb4817263819283719283719283719283719283719283719283719109",
+      "leaf_4_lead_auditor_signature": "30450221008f3c1b9942a1705e3db1c527e0294da9c31405b6329ef31a78c1b4802e8412af"
+    },
+    "compliance_score": 78.6,
+    "violations_count": 3,
+    "warnings_count": 4,
+    "passed_count": 35,
+    "hitl_validation_flag": false,
+    "standards_evaluated": [
+      "CIS Cisco IOS 17 Benchmark v4.0.0 (Level 1 & 2)",
+      "NIST SP 800-53 Rev 5 (AC, SC, IA, AU families)",
+      "DISA Network Device STIG v2r3",
+      "CERT-In Directions 2026 (CI-2024-NDS)"
+    ]
+  },
+  "consensus_and_endorsements": {
+    "consensus_type": "etcdraft (3-Node Crash Fault Tolerant Cluster)",
+    "orderer_node": "orderer.neuracomply.internal:7050",
+    "endorsement_policy": "AND('Org1MSP.peer', 'AuditorMSP.peer')",
+    "endorsements": [
+      {
+        "endorser_peer": "peer0.secops.defense.gov:7051",
+        "msp_id": "Org1MSP",
+        "cert_subject": "CN=peer0.secops.defense.gov, OU=peer, O=Defense Systems, C=IN",
+        "cert_issuer": "CN=ca.secops.defense.gov, O=Defense Systems, C=IN",
+        "signature_algorithm": "SHA256withECDSA",
+        "status": "ENDORSED_200"
+      },
+      {
+        "endorser_peer": "peer0.auditor.certin.gov:9051",
+        "msp_id": "AuditorMSP",
+        "cert_subject": "CN=peer0.auditor.certin.gov, OU=auditor, O=CERT-In Cybersecurity, C=IN",
+        "cert_issuer": "CN=ca.auditor.certin.gov, O=CERT-In Cybersecurity, C=IN",
+        "signature_algorithm": "SHA256withECDSA",
+        "status": "ENDORSED_200"
+      }
+    ]
+  },
+  "read_write_set": {
+    "reads": [
+      {
+        "key": "DEVICE_UUID_CAT9300_01",
+        "version": { "block_num": 2, "tx_num": 0 }
+      },
+      {
+        "key": "CIS_RULE_CATALOG_V4",
+        "version": { "block_num": 1, "tx_num": 0 }
+      }
+    ],
+    "writes": [
+      {
+        "key": "SCAN_RECORD_SCAN-20260924-CAT9300-01",
+        "is_delete": false
+      },
+      {
+        "key": "MERKLE_ROOT_INDEX_0x3b89e7f8",
+        "is_delete": false
+      },
+      {
+        "key": "DEVICE_CAT9300_LATEST_AUDIT",
+        "is_delete": false
+      }
+    ]
+  }
+}

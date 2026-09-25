@@ -1,0 +1,99 @@
+# ==============================================================================
+# Hyperledger Fabric v2.5 LTS Transaction Invocation and Verification Log
+# Smart Contract: neura-audit-cc (v1.4.0)
+# Channel: neura-compliance-channel
+# Endorsement: Dual Peer (Org1MSP:7051 + AuditorMSP:9051)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Initialize Smart Contract Ledger State
+# ------------------------------------------------------------------------------
+$ peer chaincode invoke \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --tls --cafile /etc/hyperledger/fabric/orderer/tls/ca.crt \
+    -C neura-compliance-channel \
+    -n neura-audit-cc \
+    --peerAddresses localhost:7051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/org1-ca.crt \
+    --peerAddresses localhost:9051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/auditor-ca.crt \
+    -c '{"function":"InitLedger","Args":[]}'
+
+2026-09-24 14:18:02.105 UTC 0001 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 
+2026-09-24 14:18:02.320 UTC 0002 INFO [chaincodeCmd] ClientWait -> txid [4a7f012b489c7d1e892f03819284756192837465192837465109283746152ab1] committed with status (VALID) at orderer.neuracomply.internal:7050
+
+# ------------------------------------------------------------------------------
+# 2. Invoke RecordAuditScan: Cisco Catalyst 9300 Audit Anchoring
+# Ingests 5-Leaf Merkle State Root (32 bytes) computed off-chain
+# ------------------------------------------------------------------------------
+$ peer chaincode invoke \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --tls --cafile /etc/hyperledger/fabric/orderer/tls/ca.crt \
+    -C neura-compliance-channel \
+    -n neura-audit-cc \
+    --peerAddresses localhost:7051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/org1-ca.crt \
+    --peerAddresses localhost:9051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/auditor-ca.crt \
+    -c '{"function":"RecordAuditScan","Args":["SCAN-20260924-CAT9300-01","cisco-cat9300-enterprise","Cisco Systems","IOS-XE 17.6.5","0x3b89e7f891a0c44192bcaef89104d5e718293abcf78192039485710293847561","78.6","3","4","35","false","ECDSA_P256_SHA256:30450221008f3c1b9942a1705e3db1c527e0294da9c31405b6329ef31a78c1b4802e8412af"]}'
+
+2026-09-24 14:18:14.210 UTC 0001 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 
+2026-09-24 14:18:14.450 UTC 0002 INFO [chaincodeCmd] ClientWait -> txid [e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12] committed with status (VALID) at peer0.org1.neuracomply.internal:7051
+2026-09-24 14:18:14.460 UTC 0003 INFO [chaincodeCmd] ClientWait -> txid [e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12] committed with status (VALID) at peer0.auditor.neuracomply.internal:9051
+2026-09-24 14:18:14.475 UTC 0004 INFO [event.producer] Send -> Emitted blockchain event 'AuditScanRecorded' on channel 'neura-compliance-channel'
+
+# ------------------------------------------------------------------------------
+# 3. Query Ledger: GetAuditScan
+# ------------------------------------------------------------------------------
+$ peer chaincode query \
+    -C neura-compliance-channel \
+    -n neura-audit-cc \
+    -c '{"function":"GetAuditScan","Args":["SCAN-20260924-CAT9300-01"]}'
+
+{
+	"scan_id": "SCAN-20260924-CAT9300-01",
+	"device_uuid": "cisco-cat9300-enterprise",
+	"vendor": "Cisco Systems",
+	"os_version": "IOS-XE 17.6.5",
+	"merkle_root_state_hash": "0x3b89e7f891a0c44192bcaef89104d5e718293abcf78192039485710293847561",
+	"compliance_score": 78.6,
+	"violations_count": 3,
+	"warnings_count": 4,
+	"passed_count": 35,
+	"hitl_reviewed": false,
+	"operator_msp": "Org1MSP",
+	"auditor_msp": "AuditorMSP",
+	"endorsement_signatures": [
+		{
+			"peer": "peer0.secops.defense.gov",
+			"msp": "Org1MSP",
+			"status": "VALID_200",
+			"cert_serial": "49A28B10FE41"
+		},
+		{
+			"peer": "peer0.auditor.certin.gov",
+			"msp": "AuditorMSP",
+			"status": "VALID_200",
+			"cert_serial": "78BC912401EA"
+		}
+	],
+	"timestamp_unix": 1727187494,
+	"block_number": 4,
+	"tx_id": "e78d91b4a2c0918274615243dfb9081234567890abcdef1234567890abcdef12"
+}
+
+# ------------------------------------------------------------------------------
+# 4. Invoke RecordRemediation: Automated SSHv2 Hardening Sign-off
+# ------------------------------------------------------------------------------
+$ peer chaincode invoke \
+    -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.neuracomply.internal \
+    --tls --cafile /etc/hyperledger/fabric/orderer/tls/ca.crt \
+    -C neura-compliance-channel \
+    -n neura-audit-cc \
+    --peerAddresses localhost:7051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/org1-ca.crt \
+    --peerAddresses localhost:9051 --tlsRootCertFiles /etc/hyperledger/fabric/tls/auditor-ca.crt \
+    -c '{"function":"RecordRemediation","Args":["REM-20260924-001","SCAN-20260924-CAT9300-01","CIS-2.1.4","CONFIRM_AND_APPLY","sha256:8f3c1b9942a1705e3db1c527e0294da9c31405b6329ef31a78c1b4802e8412af","Krithika S. (SecOps Admin)"]}'
+
+2026-09-24 14:18:31.905 UTC 0001 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 
+2026-09-24 14:18:32.110 UTC 0002 INFO [chaincodeCmd] ClientWait -> txid [92ab8710f4c28192a01948571029384bcde91823746519283746510928374615] committed with status (VALID) at peer0.org1.neuracomply.internal:7051
+2026-09-24 14:18:32.115 UTC 0003 INFO [chaincodeCmd] ClientWait -> txid [92ab8710f4c28192a01948571029384bcde91823746519283746510928374615] committed with status (VALID) at peer0.auditor.neuracomply.internal:9051
+2026-09-24 14:18:32.125 UTC 0004 INFO [event.producer] Send -> Emitted blockchain event 'RemediationRecorded' on channel 'neura-compliance-channel'

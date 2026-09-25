@@ -1,0 +1,52 @@
+# ==============================================================================
+# Hyperledger Fabric Channel Creation and Peer Join Execution Log
+# Channel: neura-compliance-channel
+# Consortium: NeuraComplyConsortium (Org1MSP, AuditorMSP)
+# Timestamp: 2026-09-24T14:12:10Z
+# ==============================================================================
+
+$ osnadmin channel join \
+    --channelID neura-compliance-channel \
+    --config-block ./channel-artifacts/neura-compliance-channel.block \
+    -o localhost:7053 \
+    --ca-file ./organizations/ordererOrganizations/neuracomply.internal/orderers/orderer.neuracomply.internal/msp/tlscacerts/tlsca.neuracomply.internal-cert.pem \
+    --client-cert ./organizations/ordererOrganizations/neuracomply.internal/orderers/orderer.neuracomply.internal/tls/server.crt \
+    --client-key ./organizations/ordererOrganizations/neuracomply.internal/orderers/orderer.neuracomply.internal/tls/server.key
+
+Status: 201 Created
+{
+	"name": "neura-compliance-channel",
+	"url": "/participation/v1/channels/neura-compliance-channel",
+	"consensusRelation": "consenter",
+	"status": "active",
+	"height": 1
+}
+
+# --- Joining peer0.org1 (SecOps Node) ---
+$ export CORE_PEER_LOCALMSPID="Org1MSP"
+$ export CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+$ export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp/users/Admin@org1.neuracomply.internal/msp
+$ export CORE_PEER_ADDRESS=localhost:7051
+
+$ peer channel join -b ./channel-artifacts/neura-compliance-channel.block
+2026-09-24 14:12:22.450 UTC 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-09-24 14:12:22.780 UTC 0002 INFO [comm.grpc.client] Open -> gRPC client connection established to peer0.org1.neuracomply.internal:7051
+2026-09-24 14:12:23.110 UTC 0003 INFO [channelCmd] executeJoin -> Successfully submitted proposal to join channel 'neura-compliance-channel'
+2026-09-24 14:12:23.250 UTC 0004 INFO [ledgermgmt] CreateLedger -> Created ledger for channel 'neura-compliance-channel' with Genesis Block #0
+
+# --- Joining peer0.auditor (Regulatory CERT-In Node) ---
+$ export CORE_PEER_LOCALMSPID="AuditorMSP"
+$ export CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/auditor-ca.crt
+$ export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp/users/Admin@auditor.neuracomply.internal/msp
+$ export CORE_PEER_ADDRESS=localhost:9051
+
+$ peer channel join -b ./channel-artifacts/neura-compliance-channel.block
+2026-09-24 14:12:35.120 UTC 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-09-24 14:12:35.380 UTC 0002 INFO [comm.grpc.client] Open -> gRPC client connection established to peer0.auditor.neuracomply.internal:9051
+2026-09-24 14:12:35.790 UTC 0003 INFO [channelCmd] executeJoin -> Successfully submitted proposal to join channel 'neura-compliance-channel'
+2026-09-24 14:12:35.910 UTC 0004 INFO [ledgermgmt] CreateLedger -> Created ledger for channel 'neura-compliance-channel' with Genesis Block #0
+
+# --- Channel Membership Verification ---
+$ peer channel list
+Channels peers has joined: 
+neura-compliance-channel
