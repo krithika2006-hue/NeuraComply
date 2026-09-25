@@ -16,7 +16,8 @@ import {
   Sparkles,
   Lock,
   ArrowRight,
-  Link2
+  Link2,
+  FileText
 } from 'lucide-react';
 import { AUDIT_CONTROLS, VENDOR_PRESETS } from '../data/mockData';
 import NetworkTopologyGraphic from './NetworkTopologyGraphic';
@@ -30,6 +31,7 @@ export default function ResultsDashboard({
   setWhatIfEnabled,
   onNavigateToTriage,
   onNavigateToLedger,
+  onOpenReport,
   auditBlocks = [],
   showToast
 }) {
@@ -224,15 +226,27 @@ export default function ResultsDashboard({
           </div>
         </div>
 
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={onNavigateToLedger}
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px' }}
-        >
-          <Link2 size={13} />
-          <span>View Audit Ledger</span>
-          <ArrowRight size={13} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={onOpenReport}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}
+            title="Generate & Download Executive PDF Compliance Report"
+          >
+            <FileText size={13} />
+            <span>Generate PDF Report</span>
+          </button>
+
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={onNavigateToLedger}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}
+          >
+            <Link2 size={13} />
+            <span>View Ledger</span>
+            <ArrowRight size={13} />
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

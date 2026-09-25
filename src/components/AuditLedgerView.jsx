@@ -334,7 +334,7 @@ export default function AuditLedgerView({
         </div>
 
         <div className="filter-buttons">
-          <span style={{ fontSize: '12px', color: 'var(--text-tertiary)', marginRight: '4px' }}>Filter Event:</span>
+          <span className="filter-label">Filter Event:</span>
           {[
             { id: 'ALL', label: 'All Transactions' },
             { id: 'SCAN_COMPLETED', label: 'Scans' },

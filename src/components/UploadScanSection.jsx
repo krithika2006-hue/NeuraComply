@@ -91,6 +91,8 @@ export default function UploadScanSection({
   const [dragOver, setDragOver] = useState(false);
   const [selectedFrameworks, setSelectedFrameworks] = useState(['cis', 'nist', 'stig']);
   const [loadingSampleId, setLoadingSampleId] = useState(null);
+  const [inputTab, setInputTab] = useState('upload'); // 'upload' | 'paste'
+  const [pastedContent, setPastedContent] = useState('');
   const fileInputRef = useRef(null);
 
   const displayConfig = activeConfig || VENDOR_PRESETS.find(p => p.id === selectedPreset) || VENDOR_PRESETS[0];
@@ -100,6 +102,7 @@ export default function UploadScanSection({
     try {
       const checksum = await generateChecksum(text);
       const { parsedConfig, controls } = evaluateRealConfig(fileName, text, checksum);
+      parsedConfig.fullContent = text;
       if (onConfigLoaded) {
         onConfigLoaded(parsedConfig, controls);
       }
@@ -169,62 +172,123 @@ export default function UploadScanSection({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Upload and Preset Selection Grid */}
       <div className="upload-grid">
-        {/* Left: Drag and Drop Zone */}
-        <div
-          className={`dropzone-card ${dragOver ? 'drag-over' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            style={{ display: 'none' }}
-            accept=".cfg,.conf,.txt,.set,.xml"
-          />
-
-          <div className="dropzone-icon">
-            <UploadCloud size={24} />
-          </div>
-
-          <h4 className="dropzone-title">
-            {isCustomLoaded ? `Ingested: ${displayConfig.fileName}` : 'Drop raw network configuration file'}
-          </h4>
-          <p className="dropzone-hint">
-            Supports Cisco IOS/XE, JunOS, PAN-OS XML, and FortiOS (.cfg, .conf, .txt)
-          </p>
-
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                fileInputRef.current?.click();
-              }}
-            >
-              <FileCode size={13} />
-              <span>Browse Local File</span>
-            </button>
+        {/* Left: Input Selection (Dropzone or Paste Mode) */}
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* Mode Switcher Tabs */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
+            <div style={{ display: 'inline-flex', gap: '4px', backgroundColor: 'var(--bg-subtle)', padding: '3px', borderRadius: 'var(--radius-md)' }}>
+              <button
+                type="button"
+                className={`filter-btn ${inputTab === 'upload' ? 'active' : ''}`}
+                onClick={() => setInputTab('upload')}
+                style={{ fontSize: '12px', padding: '4px 12px' }}
+              >
+                Upload File (.cfg / .conf)
+              </button>
+              <button
+                type="button"
+                className={`filter-btn ${inputTab === 'paste' ? 'active' : ''}`}
+                onClick={() => setInputTab('paste')}
+                style={{ fontSize: '12px', padding: '4px 12px' }}
+              >
+                Paste Raw CLI Config
+              </button>
+            </div>
 
             {isCustomLoaded && onResetToPreset && (
               <button
                 type="button"
                 className="btn btn-subtle btn-sm"
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   onResetToPreset();
                   if (showToast) showToast('Reset to built-in vendor preset');
                 }}
                 style={{ fontSize: '11.5px', color: 'var(--text-tertiary)' }}
               >
                 <RotateCcw size={12} />
-                <span>Reset to Presets</span>
+                <span>Reset Presets</span>
               </button>
             )}
           </div>
+
+          {inputTab === 'upload' ? (
+            <div
+              className={`dropzone-card ${dragOver ? 'drag-over' : ''}`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              style={{ minHeight: '190px' }}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+                accept=".cfg,.conf,.txt,.set,.xml"
+              />
+
+              <div className="dropzone-icon">
+                <UploadCloud size={24} />
+              </div>
+
+              <h4 className="dropzone-title">
+                {isCustomLoaded ? `Ingested: ${displayConfig.fileName}` : 'Drop raw network configuration file'}
+              </h4>
+              <p className="dropzone-hint">
+                Supports Cisco IOS/XE, JunOS, PAN-OS XML, and FortiOS (.cfg, .conf, .txt)
+              </p>
+
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+              >
+                <FileCode size={13} />
+                <span>Browse Local File</span>
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <textarea
+                className="code-editor-textarea font-mono"
+                value={pastedContent}
+                onChange={(e) => setPastedContent(e.target.value)}
+                placeholder={`! Paste Cisco IOS-XE, Junos, or FortiOS config text here...\nhostname Core-SW-01\n!\nline vty 0 4\n transport input telnet\n exec-timeout 0 0\n!\nsnmp-server community public RO\n`}
+                style={{
+                  width: '100%',
+                  height: '160px',
+                  padding: '12px',
+                  fontSize: '12px',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--border-default)',
+                  backgroundColor: 'var(--bg-canvas)',
+                  color: 'var(--text-primary)',
+                  resize: 'vertical',
+                  lineHeight: '1.4'
+                }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  disabled={!pastedContent.trim()}
+                  onClick={() => {
+                    if (pastedContent.trim()) {
+                      processConfigContent('custom_pasted_config.cfg', pastedContent);
+                    }
+                  }}
+                  style={{ gap: '6px' }}
+                >
+                  <Sparkles size={13} />
+                  <span>Ingest & Audit Pasted Config</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Pitch Presets */}

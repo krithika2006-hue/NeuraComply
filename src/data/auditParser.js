@@ -257,7 +257,8 @@ export function evaluateRealConfig(fileName, content, checksum) {
       controlsWarning: warningCount,
       controlsViolation: violationCount,
       fileName: fileName || 'uploaded_config.cfg',
-      rawSnippet: content.slice(0, 3500)
+      rawSnippet: content.slice(0, 3500),
+      fullContent: content
     },
     controls: evaluatedControls
   };

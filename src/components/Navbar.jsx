@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Shield, Sparkles, Terminal, CheckCircle2, SlidersHorizontal, FileText, ChevronDown, LogOut, Database } from 'lucide-react';
+import { Shield, Sparkles, Terminal, CheckCircle2, SlidersHorizontal, FileText, ChevronDown, LogOut } from 'lucide-react';
 import { GoogleLogo } from './GoogleAuthModal';
 
 export default function Navbar({
@@ -8,8 +8,7 @@ export default function Navbar({
   onOpenReport,
   user,
   onOpenGoogleSignIn,
-  onSignOut,
-  dbInfo
+  onSignOut
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -25,8 +24,6 @@ export default function Navbar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const isDbConnected = dbInfo?.connected !== false;
-
   return (
     <>
       {/* Pitch Presenter Quick Navigation Strip */}
@@ -36,29 +33,6 @@ export default function Navbar({
             <Sparkles size={13} />
             <span>SIH 2026 PITCH DEMO</span>
             <span style={{ color: 'var(--text-tertiary)', fontWeight: 400 }}>| Problem: AI Multi-Vendor Compliance</span>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginLeft: '8px',
-              padding: '2px 8px',
-              borderRadius: '12px',
-              backgroundColor: isDbConnected ? 'rgba(46, 125, 50, 0.12)' : 'rgba(211, 47, 47, 0.1)',
-              border: `1px solid ${isDbConnected ? 'rgba(46, 125, 50, 0.3)' : 'rgba(211, 47, 47, 0.25)'}`,
-              fontSize: '10.5px',
-              fontWeight: 600,
-              color: isDbConnected ? '#2E7D32' : '#C62828'
-            }}>
-              <span style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: isDbConnected ? '#2E7D32' : '#C62828',
-                boxShadow: isDbConnected ? '0 0 4px #2E7D32' : 'none'
-              }} />
-              <Database size={11} />
-              <span>{isDbConnected ? 'PostgreSQL 15: neuracomply (5432)' : 'PostgreSQL: Offline'}</span>
-            </div>
           </div>
 
           <div className="presenter-buttons">
