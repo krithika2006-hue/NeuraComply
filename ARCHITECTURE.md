@@ -15,60 +15,50 @@
 
 ## 1. System Overview
 
-NeuraComply is a **browser-based, multi-vendor network security compliance auditor** that ingests device configurations from Cisco, Juniper, Palo Alto, and Fortinet, parses them into a vendor-agnostic canonical AST, evaluates them against CIS Benchmarks / NIST SP 800-53 controls, and anchors every audit event to an **immutable Hyperledger Fabric blockchain ledger**.
+NeuraComply is an **AI-driven multi-vendor network security compliance auditor** that ingests device configurations from Cisco, Juniper, Fortinet, and Palo Alto, normalizes them into canonical security intents via a continuous vector embedding engine, structures them according to a **Unified Security Schema (USS)**, deterministically evaluates compliance against CIS Benchmarks / NIST SP 800-53 controls, and anchors every audit event to an **immutable secondary audit ledger (Hyperledger Fabric v2.5 / PostgreSQL)**.
 
 ```mermaid
 graph TB
-    subgraph "User Layer"
-        USER["👤 SecOps Operator<br/>(Browser)"]
+    subgraph "Ingestion & Context Extraction"
+        CONFIGS["Raw Vendor Configurations<br/>(Cisco, Juniper, Fortinet, Palo Alto)"]
+        PARSER["Multi-Vendor Parser<br/>(OS Detection, Interfaces, Protocols)"]
     end
 
-    subgraph "Frontend — React SPA (Vite)"
-        LANDING["Landing Page<br/>(Hero, Features, Pull-Quote)"]
-        UPLOAD["1. Ingest & Scanner<br/>(File Upload / Preset Select)"]
-        RESULTS["2. Compliance Posture<br/>(Dashboard & What-If)"]
-        TRIAGE["3. Confidence Triage<br/>(Auto vs Human-Review)"]
-        LEDGER["4. Audit Ledger<br/>(Blockchain Explorer)"]
-        AUTH["Google OAuth Modal"]
-        REPORT["Executive Report PDF"]
+    subgraph "AI Semantic Normalization Layer (src/ai/)"
+        EMBED["Subword-Semantic Vectorizer<br/>(Dense R^128 Continuous Embeddings)"]
+        SIM["Cosine Similarity Engine<br/>(Prototype Exemplar Matching)"]
+        USS["Unified Security Schema (USS)<br/>(Vendor-Agnostic Intent Envelope)"]
     end
 
-    subgraph "Core Engine (Client-Side JS)"
-        PARSER["Multi-Vendor<br/>Config Parser"]
-        AST["Canonical AST<br/>Normalizer"]
-        EVALUATOR["Deterministic<br/>Rule Evaluator"]
-        HASH["SHA-256 Checksum<br/>Engine"]
+    subgraph "Operational Safety & Feedback"
+        CONF["Calibrated Confidence Classifier<br/>(Top-1 Similarity + Margin Separation)"]
+        TRIAGE{"Decision Routing"}
+        AUTO["Auto-Accepted Tier<br/>(Confidence >= 80%)"]
+        HITL["SecOps HITL Triage Queue<br/>(Confidence 60-79%)"]
+        KB["Active Knowledge Base Store<br/>(Stores Operator-Verified Mappings)"]
     end
 
-    subgraph "Blockchain Layer (Hyperledger Fabric v2.5)"
-        ORDERER["Raft Orderer Cluster<br/>(3-node)"]
-        PEER1["peer0.secops<br/>(Org1MSP)"]
-        PEER2["peer0.auditor<br/>(AuditorMSP)"]
-        CC["Smart Contract<br/>(Go Chaincode)"]
-        STATEDB["CouchDB<br/>World State"]
+    subgraph "Deterministic Policy Engine"
+        EVAL["Deterministic Compliance Engine<br/>(CIS Benchmarks & NIST SP 800-53)"]
+        FINDINGS["Audit Findings, Line Diffs<br/>& CLI Remediation Scripts"]
     end
 
-    subgraph "Identity & Auth"
-        GOOGLE["Google OAuth 2.0<br/>SSO"]
-        FABRICA["Fabric CA<br/>(X.509 PKI)"]
+    subgraph "Reporting & Audit Attestation (Secondary Layer)"
+        PDF["Executive Compliance Brief<br/>(Client-Side A4 PDF via jsPDF)"]
+        MERKLE["5-Leaf SHA-256 Merkle Root<br/>(Off-Chain State Cryptographic Digest)"]
+        FABRIC["Hyperledger Fabric v2.5 LTS<br/>(Immutable Dual-Endorsed Audit Ledger)"]
     end
 
-    USER --> LANDING --> UPLOAD
-    UPLOAD --> PARSER
-    PARSER --> AST --> EVALUATOR
-    EVALUATOR --> RESULTS
-    RESULTS --> TRIAGE
-    TRIAGE --> LEDGER
-
-    EVALUATOR --> HASH
-    HASH --> CC
-    CC --> PEER1 & PEER2
-    PEER1 & PEER2 --> ORDERER
-    ORDERER --> STATEDB
-
-    USER --> AUTH --> GOOGLE
-    FABRICA --> PEER1 & PEER2
-    REPORT --> USER
+    CONFIGS --> PARSER
+    PARSER --> EMBED --> SIM --> USS
+    USS --> CONF --> TRIAGE
+    TRIAGE -- "High Confidence" --> AUTO --> EVAL
+    TRIAGE -- "Borderline / Novel" --> HITL
+    HITL -- "Operator Sign-Off" --> KB
+    KB -. "Boosted Retrieval (>= 0.95)" .-> USS
+    HITL --> EVAL
+    EVAL --> FINDINGS --> PDF
+    FINDINGS --> MERKLE --> FABRIC
 ```
 
 ## 2. Architectural Tiers
@@ -76,11 +66,13 @@ graph TB
 | Tier | Technology | Responsibility |
 |------|-----------|----------------|
 | **Presentation** | React 18 + Vite + Lucide Icons | SPA UI with 5 views (Landing, Upload, Results, Triage, Ledger) |
-| **Business Logic** | Vanilla JavaScript (client-side) | Config parsing, vendor detection, AST normalization, compliance rule evaluation, SHA-256 checksums |
-| **State Management** | React `useState` (lifted to `App.jsx`) | Centralized state for scan results, audit blocks, auth user, view routing |
-| **Blockchain** | Hyperledger Fabric v2.5 LTS (Go chaincode) | Immutable audit trail, dual-peer endorsement, Raft consensus |
-| **Authentication** | Google OAuth 2.0 (simulated) + Fabric CA X.509 | Operator identity binding for audit accountability |
-| **Deployment** | Vite build → Vercel / Netlify | Static SPA hosting; Fabric network via Docker Compose |
+| **Ingestion & Feature Parser** | Vanilla JavaScript (`src/data/auditParser.js`) | Vendor auto-detection (Cisco, Juniper, Forti, PAN), line counting, interface extraction, protocol footprint |
+| **Semantic Intent Normalization** | Node.js / ES Modules (`src/ai/`) | Subword character $n$-gram hashing, continuous vector projection ($\mathbb{R}^{128}$), cosine prototype similarity, Unified Security Schema (USS) |
+| **Confidence & HITL Safety** | Calibrated classifier (`src/ai/confidence.js`, `knowledgeBase.js`) | Thresholding ($\ge 80\%$ Auto, $60-79\%$ HITL, $<60\%$ Reject), margin calculation, persistent verified mapping reuse |
+| **Compliance Evaluation Engine** | Deterministic AST Evaluator | Ultimate compliance authority: CIS Benchmarks, NIST SP 800-53, line-level diffs, remediation & rollback |
+| **Relational Backend & State** | Node.js + Express 5 + PostgreSQL 15 | Relational persistence (`devices`, `audit_scans`, `audit_controls`, `triage_items`, `ledger_blocks`) |
+| **Secondary Audit Attestation** | Hyperledger Fabric v2.5 LTS + Merkle Tree | Cryptographic 32-byte Merkle root anchor, dual-peer endorsement (`Org1MSP`, `AuditorMSP`), Raft ordering |
+| **Executive Reporting** | `jsPDF` + `jspdf-autotable` | Instant client-side generation of downloadable A4 regulatory audit certificate |
 
 ## 3. Data Flow — End-to-End Audit Lifecycle
 
@@ -88,27 +80,35 @@ graph TB
 sequenceDiagram
     participant OP as SecOps Operator
     participant UI as React Frontend
-    participant PP as Config Parser
-    participant RE as Rule Evaluator
-    participant HL as Hyperledger Fabric
-    participant DB as CouchDB State
+    participant PP as Multi-Vendor Parser
+    participant AI as Semantic Intent Engine (src/ai/)
+    participant CE as Deterministic Policy Engine
+    participant KB as Knowledge Base Store
+    participant HL as Hyperledger Fabric Ledger
 
-    OP->>UI: Upload .cfg / .conf / .xml OR select preset
-    UI->>PP: Pass raw config text + filename
-    PP->>PP: detectVendorAndOS() → identify vendor type
-    PP->>PP: detectProtocols() → extract protocol footprint
-    PP->>PP: countInterfaces() → enumerate L2/L3 interfaces
-    PP->>RE: Normalized device metadata + raw content
-    RE->>RE: Evaluate 8 CIS/NIST controls deterministically
-    RE->>RE: Calculate composite compliance score
-    RE-->>UI: Return { parsedConfig, controls[] }
-    UI->>UI: Update Results Dashboard + score gauge
-    UI->>HL: Anchor SCAN_COMPLETED block (SHA-256 chained)
-    HL->>DB: Commit audit record to world state
-    OP->>UI: Review Confidence Triage findings
-    OP->>UI: Confirm human-review items
-    UI->>HL: Anchor REMEDIATION_CONFIRMED block
-    OP->>UI: Generate Executive Report
+    OP->>UI: Upload .cfg / .conf / .xml or select preset
+    UI->>PP: Raw configuration content + filename
+    PP->>PP: detectVendorAndOS() + countInterfaces() + detectProtocols()
+    PP->>AI: Configuration statements across active blocks
+    AI->>KB: Check for existing operator-verified mapping
+    alt Knowledge Base Hit
+        KB-->>AI: Return verified intent with boosted confidence (>= 0.95)
+    else Vector Similarity Match
+        AI->>AI: Project to dense continuous vector in R^128
+        AI->>AI: Compute cosine similarity vs canonical prototypes
+        AI->>AI: Evaluate confidence score and margin separation
+    end
+    AI->>CE: Canonical Unified Security Schema (USS) intents
+    CE->>CE: Evaluate CIS Benchmarks / NIST controls deterministically
+    CE->>CE: Calculate compliance score, line diffs & remediation
+    CE-->>UI: Return evaluated controls, score & normalized intents
+    UI->>UI: Render Results Dashboard, What-If simulation & Triage
+    opt Borderline / Novel Syntax (HITL)
+        OP->>UI: Review uncertain finding in Confidence Triage
+        OP->>KB: Confirm mapping & record to Knowledge Base
+    end
+    OP->>UI: Download Executive PDF Compliance Report
+    UI->>HL: Commit 32-byte Merkle Root to immutable ledger block
 ```
 
 ## 4. Multi-Vendor Support Matrix

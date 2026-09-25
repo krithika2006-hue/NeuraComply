@@ -5,7 +5,7 @@
 
 [![Built with React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
-[![Tests: 57 Passed](https://img.shields.io/badge/Automated%20Tests-57%2F57%20Passing-brightgreen?logo=node.js&logoColor=white)](tests/)
+[![Tests: 59 Passed](https://img.shields.io/badge/Automated%20Tests-59%2F59%20Passing-brightgreen?logo=node.js&logoColor=white)](tests/)
 [![AI Engine: Unified Security Schema](https://img.shields.io/badge/Semantic%20AI-Unified%20Security%20Schema%20(USS)-8A2BE2)](AI_SEMANTIC_ENGINE.md)
 [![Evaluation: 100% Measured](https://img.shields.io/badge/Cross--Vendor%20Benchmark-100%25%20Equivalence-blue)](CROSS_VENDOR_EVALUATION.md)
 [![PDF Engine: jsPDF](https://img.shields.io/badge/PDF%20Engine-jsPDF%20%2B%20AutoTable-E02424?logo=adobe-acrobat-reader&logoColor=white)](src/data/pdfReportGenerator.js)
@@ -157,19 +157,19 @@ Following report generation, the **32-byte SHA-256 Merkle State Root** is anchor
 
 ---
 
-## 🧪 Comprehensive Automated Test Suite (57 Tests Passing)
+## 🧪 Comprehensive Automated Test Suite (59 Tests Passing)
 
-NeuraComply features **57 unit, integration, semantic, cryptographic, and database tests** running via Node.js native test runner (`node:test`):
+NeuraComply features **59 unit, integration, semantic, cryptographic, and database tests** running via Node.js native test runner (`node:test`):
 
 ```bash
 npm test
 ```
 
-### Verified Test Suite Breakdown (57 Tests Across 24 Suites)
+### Verified Test Suite Breakdown (59 Tests Across 24 Suites)
 
 | Test Suite File | Focus Area | Tests | Status |
 |---|---|:---:|:---:|
-| **[`tests/semanticEngine.test.js`](tests/semanticEngine.test.js)** | Cross-vendor intent convergence (SSHv2 across 4 vendors), high confidence auto-acceptance, HITL routing, noise rejection, invalid input handling, domain equivalence, knowledge base reuse | **7 Tests** | ✅ PASS |
+| **[`tests/semanticEngine.test.js`](tests/semanticEngine.test.js)** | Cross-vendor intent convergence (SSHv2 across 4 vendors), high confidence auto-acceptance, HITL routing, noise rejection, invalid input handling, domain equivalence, knowledge base reuse, semantic mismatch, compliance decision | **9 Tests** | ✅ PASS |
 | **[`tests/auditParser.test.js`](tests/auditParser.test.js)** | Multi-vendor OS detection (Cisco, Juniper, Fortinet, Palo Alto), protocol extraction, interface counting, CIS/NIST rule evaluation, negative assertion filtering (`no snmp-server...`) | **14 Tests** | ✅ PASS |
 | **[`tests/confidenceTriage.test.js`](tests/confidenceTriage.test.js)** | Confidence thresholding, explainability rationale, operator approval/exception state transitions, What-If simulation score lift math | **7 Tests** | ✅ PASS |
 | **[`tests/auditLedgerService.test.js`](tests/auditLedgerService.test.js)** | Deterministic SHA-256 hash chaining, genesis block root trust, block sequence linking, mathematical anti-tamper detection | **8 Tests** | ✅ PASS |
@@ -177,7 +177,7 @@ npm test
 | **[`tests/complianceContract.test.js`](tests/complianceContract.test.js)** | 5-leaf Merkle state root construction, zero-knowledge inclusion proofs, rogue administrator defense, Go chaincode schema conformance | **6 Tests** | ✅ PASS |
 | **[`tests/crossVendorEquivalence.test.js`](tests/crossVendorEquivalence.test.js)** | Cross-vendor AST normalization: identical SSHv2 and Telnet evaluation across Cisco, Juniper, Fortinet, and Palo Alto | **2 Tests** | ✅ PASS |
 | **[`tests/database.test.js`](tests/database.test.js)** | PostgreSQL 15 connection (port 5432, `neuracomply`), relational schema auto-migration (`devices`, `audit_scans`, `audit_controls`, `triage_items`, `ledger_blocks`), seed verification, Merkle root insertion | **6 Tests** | ✅ PASS |
-| **TOTAL** | **Full System Automated Verification** | **57 Tests** | **✅ 100% PASS** |
+| **TOTAL** | **Full System Automated Verification** | **59 Tests** | **✅ 100% PASS** |
 
 ---
 

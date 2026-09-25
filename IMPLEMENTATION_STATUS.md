@@ -6,6 +6,19 @@
 
 ---
 
+## 0. Technical Audit Findings (Step 1 Verification)
+
+| Core Audit Question | Technical Status & Implementation Location |
+| :--- | :--- |
+| **1. Is a genuine semantic embedding/model already implemented?** | **YES.** Implemented in `src/ai/embeddings.js` ($\mathbb{R}^{128}$ continuous vector space with subword character $n$-gram hashing, domain concept weighting, dedicated polarity axes, and L2 normalization). Cosine similarity against canonical prototype vectors is computed in `src/ai/similarity.js`. An optional MiniLM neural transformer path is architected as an experimental plug-in. |
+| **2. Is the current system mainly AST/heuristic/rule based?** | **HYBRID ARCHITECTURE.** Ingestion, line tokenization, and vendor detection are performed in `src/data/auditParser.js`. Security Intent Normalization is performed by the semantic vector engine in `src/ai/semanticEngine.js`. Final compliance evaluation remains **strictly deterministic**: `auditParser.js` evaluates canonical security parameters against CIS Benchmarks and NIST SP 800-53 controls. AI does **NOT** make unverified compliance decisions. |
+| **3. Where exactly is confidence calculated?** | Implemented in `src/ai/confidence.js` within `evaluateConfidence(topMatch, runnerUp)`. Calculates calibrated confidence based on top-1 cosine similarity ($s_1$) and margin separation ($\Delta = s_1 - s_2$): $\text{Confidence} = (s_1 \times 0.75) + (\Delta \times 0.25)$. Decision boundaries: $\ge 80\% \to$ `AUTO_ACCEPTED`, $60\% - 79\% \to$ `HUMAN_REVIEW`, $< 60\% \to$ `REJECTED`. |
+| **4. Where exactly does HITL occur?** | **Three tiers:** (1) **UI:** `src/components/ConfidenceTriageView.jsx` allows operators to review items routed to `HUMAN_REVIEW`, sign off, or mark exceptions; (2) **API/DB:** `server/index.js` (`POST /api/triage/:id/confirm`) updates PostgreSQL and appends a `REMEDIATION_CONFIRMED` block to the ledger; (3) **Knowledge Loop:** `src/ai/knowledgeBase.js` (`recordVerifiedMapping`) stores confirmed mappings so future audits retrieve them with boosted confidence ($\ge 0.95$). |
+| **5. Where exactly is the normalized security intent generated?** | In `src/ai/semanticEngine.js` inside `normalizeSecurityIntent(configLine, vendorHint, context)`. It returns a structured intent envelope conformant to the Unified Security Schema (`src/ai/intentSchema.js`). |
+| **6. Which parts are actually runnable?** | **100% RUNNABLE:** (1) Multi-vendor parser & feature extraction; (2) Semantic Intent Engine & prototype similarity (`npm run evaluate`); (3) Automated tests (59 tests across 24 suites via `npm test`); (4) Express server & PostgreSQL 15 database (`npm run server`); (5) React + Vite SPA frontend (`npm run dev`); (6) Executive PDF report generation in browser. |
+
+---
+
 ## 1. IMPLEMENTED
 
 The following capabilities are genuinely built, tested, and operational within the active workspace:

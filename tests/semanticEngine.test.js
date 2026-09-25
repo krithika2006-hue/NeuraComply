@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { normalizeSecurityIntent } from '../src/ai/semanticEngine.js';
 import { recordVerifiedMapping, resetKnowledgeBase } from '../src/ai/knowledgeBase.js';
 import { setConfidenceThresholds, getConfidenceThresholds, DECISION_STATUS } from '../src/ai/confidence.js';
+import { evaluateRealConfig } from '../src/data/auditParser.js';
 
 describe('Semantic Intent Normalization Engine (AI/USS)', () => {
   beforeEach(() => {
@@ -105,5 +106,45 @@ describe('Semantic Intent Normalization Engine (AI/USS)', () => {
     assert.ok(afterRes.confidence >= 0.95, `Expected boosted confidence >= 0.95, got ${afterRes.confidence}`);
     assert.equal(afterRes.status, DECISION_STATUS.AUTO_ACCEPTED);
     assert.ok(afterRes.evidence[0].includes('human-verified knowledge base entry'));
+  });
+
+  test('test_semantic_mismatch(): verifies opposing command polarities do not match same intent', () => {
+    // Telnet Enabled (Risk) vs Telnet Disabled (Compliant)
+    const telnetRisk = normalizeSecurityIntent('transport input telnet', 'Cisco');
+    const telnetSafe = normalizeSecurityIntent('no transport input telnet', 'Cisco');
+
+    assert.equal(telnetRisk.security_intent, 'TELNET_ENABLED');
+    assert.equal(telnetSafe.security_intent, 'TELNET_DISABLED');
+    assert.notEqual(telnetRisk.security_intent, telnetSafe.security_intent);
+
+    // HTTP Enabled (Risk) vs HTTP Disabled (Compliant)
+    const httpRisk = normalizeSecurityIntent('ip http server', 'Cisco');
+    const httpSafe = normalizeSecurityIntent('no ip http server', 'Cisco');
+
+    assert.equal(httpRisk.security_intent, 'HTTP_CLEARTEXT_ACTIVE');
+    assert.equal(httpSafe.security_intent, 'HTTP_CLEARTEXT_DISABLED');
+    assert.notEqual(httpRisk.security_intent, httpSafe.security_intent);
+  });
+
+  test('test_compliance_decision_after_normalization(): verifies deterministic compliance evaluator acts on normalized state', () => {
+    // Audit a configuration that permits Telnet
+    const nonCompliantConfig = 'line vty 0 4\n transport input telnet\n';
+    const norm = normalizeSecurityIntent('transport input telnet', 'Cisco');
+    assert.equal(norm.security_intent, 'TELNET_ENABLED');
+    assert.equal(norm.normalized_intent.state, 'ACTIVE_RISK');
+
+    // The deterministic compliance engine evaluates CIS-2.1.4 as violation
+    const auditRes = evaluateRealConfig('test_telnet.cfg', nonCompliantConfig, 'sha256:test1');
+    const sshCtrl = auditRes.controls.find(c => c.id === 'CIS-2.1.4');
+    assert.equal(sshCtrl.status, 'violation');
+
+    // Audit a compliant configuration enforcing SSHv2
+    const compliantConfig = 'line vty 0 4\n transport input ssh\n exec-timeout 10 0\n';
+    const normCompliant = normalizeSecurityIntent('transport input ssh', 'Cisco');
+    assert.equal(normCompliant.security_intent, 'TELNET_DISABLED');
+
+    const compliantAudit = evaluateRealConfig('test_ssh.cfg', compliantConfig, 'sha256:test2');
+    const sshCtrlCompliant = compliantAudit.controls.find(c => c.id === 'CIS-2.1.4');
+    assert.equal(sshCtrlCompliant.status, 'passed');
   });
 });
