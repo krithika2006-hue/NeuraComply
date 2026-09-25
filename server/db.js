@@ -198,18 +198,18 @@ async function seedInitialData(client) {
     }
   }
 
-  // Check if triage_items is empty
-  const triageCheck = await client.query('SELECT COUNT(*) FROM triage_items');
-  if (parseInt(triageCheck.rows[0].count, 10) === 0) {
-    console.log('[PostgreSQL] Seeding triage items...');
-    for (const item of TRIAGE_ITEMS) {
+  // Seed / Sync triage items
+  for (const item of TRIAGE_ITEMS) {
       await client.query(`
         INSERT INTO triage_items (
           id, rule_id, title, vendor, control_code, category, type,
           confidence, confidence_reason, action_taken, risk_tier,
           remediation_script, rollback_script, can_confirm, confirmed, operator_note
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-        ON CONFLICT (id) DO NOTHING;
+        ON CONFLICT (id) DO UPDATE SET
+          confidence = EXCLUDED.confidence,
+          type = EXCLUDED.type,
+          can_confirm = EXCLUDED.can_confirm;
       `, [
         item.id,
         item.ruleId,
@@ -229,7 +229,6 @@ async function seedInitialData(client) {
         item.operatorNote || null
       ]);
     }
-  }
 
   // Check if ledger_blocks is empty
   const ledgerCheck = await client.query('SELECT COUNT(*) FROM ledger_blocks');

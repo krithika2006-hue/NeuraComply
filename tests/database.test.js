@@ -46,13 +46,13 @@ describe('PostgreSQL Database & Backend Integration', () => {
     const autoResolved = res.rows.filter(i => i.type === 'auto-resolved');
     assert.ok(autoResolved.length >= 3);
     for (const item of autoResolved) {
-      assert.ok(parseFloat(item.confidence) >= 95.0);
+      assert.ok(parseFloat(item.confidence) >= 80.0);
     }
 
     const humanReview = res.rows.filter(i => i.type === 'human-review');
     assert.ok(humanReview.length >= 2);
     for (const item of humanReview) {
-      assert.ok(parseFloat(item.confidence) < 95.0);
+      assert.ok(parseFloat(item.confidence) < 80.0);
       assert.equal(item.can_confirm, true);
     }
   });

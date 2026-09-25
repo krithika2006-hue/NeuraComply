@@ -140,7 +140,7 @@ export default function ConfidenceTriageView({
             <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--status-compliant)' }}>
               {autoResolvedItems.length}
             </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>&ge; 95% Confidence</div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>&ge; 80% Confidence</div>
           </div>
 
           <div style={{ width: '1px', backgroundColor: 'var(--border-subtle)' }} />
@@ -150,7 +150,7 @@ export default function ConfidenceTriageView({
             <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--status-warning)' }}>
               {humanReviewItems.length}
             </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>&lt; 90% Confidence</div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>&lt; 80% Confidence</div>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function ConfidenceTriageView({
           <div className="triage-col-header auto-resolved">
             <div className="triage-col-title">
               <CheckCircle2 size={16} color="var(--status-compliant)" />
-              <span>Auto-Resolved via High Confidence (&ge; 95%)</span>
+              <span>Auto-Resolved via High Confidence (&ge; 80%)</span>
             </div>
             <span className="badge badge-compliant">{autoResolvedItems.length} Active</span>
           </div>

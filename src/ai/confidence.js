@@ -11,7 +11,10 @@ export const DECISION_STATUS = {
   REJECTED: 'REJECTED'
 };
 
-// Configurable thresholds with empirical defaults
+// Production confidence threshold policy:
+// - AUTO_ACCEPTED: similarity >= 80% (0.80) AND margin >= 10% (0.10)
+// - HUMAN_REVIEW: similarity 60%-79% (0.60-0.79) OR margin < 10% (0.10)
+// - REJECTED: similarity < 60% (0.60)
 let HIGH_THRESHOLD = 0.80;
 let REVIEW_THRESHOLD = 0.60;
 

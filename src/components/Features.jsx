@@ -12,7 +12,7 @@ export default function Features({ onNavigateToTriage }) {
     {
       icon: <Gauge size={20} />,
       title: 'Confidence-Scored Automation',
-      desc: 'Differentiates deterministic rules (≥95% confidence, auto-resolved) from ambiguous operator intent (<90% confidence, flagged with AI explanation for human sign-off).',
+      desc: 'Differentiates high-confidence semantic mappings (≥80% confidence, auto-resolved) from ambiguous operator intent (<80% confidence, flagged with AI explanation for human sign-off).',
       tag: 'Core Innovation',
       isHighlight: true
     },

@@ -474,7 +474,7 @@ export const TRIAGE_ITEMS = [
     controlCode: 'NIST AC-3 / CIS 4.2.1',
     category: 'Access Control',
     type: 'human-review',
-    confidence: 84.2,
+    confidence: 78.2,
     confidenceReason: 'Semantic ambiguity: The configuration contains ACL `101` applied on GigabitEthernet1/0/1, but VTY lacks an explicit `access-class`. The AI detected legacy subnet `10.250.1.0/24` in interface descriptions, but cannot verify if out-of-band bastion host `10.100.50.0/24` should be granted administrative ingress without operator sign-off.',
     actionTaken: 'Awaiting Operator Sign-Off',
     riskTier: 'Medium',

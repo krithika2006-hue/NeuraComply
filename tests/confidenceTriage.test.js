@@ -4,28 +4,28 @@ import { TRIAGE_ITEMS, EXECUTIVE_SUMMARY_STATS, AUDIT_CONTROLS } from '../src/da
 
 describe('Confidence-Scored Triage Engine (Differentiator)', () => {
   describe('Threshold Routing & Categorization', () => {
-    test('routes findings with confidence >= 95% to auto-resolved tier', () => {
+    test('routes findings with confidence >= 80% to auto-resolved tier', () => {
       const autoResolved = TRIAGE_ITEMS.filter(item => item.type === 'auto-resolved');
       assert.ok(autoResolved.length >= 3, 'Should have at least 3 auto-resolved findings');
 
       for (const item of autoResolved) {
         assert.ok(
-          item.confidence >= 95.0,
-          `Item ${item.id} (${item.title}) has confidence ${item.confidence} which is < 95%`
+          item.confidence >= 80.0,
+          `Item ${item.id} (${item.title}) has confidence ${item.confidence} which is < 80%`
         );
         assert.equal(item.confirmed, true, `Auto-resolved item ${item.id} should be pre-confirmed`);
         assert.equal(item.canConfirm, false, `Auto-resolved item ${item.id} should not require manual confirm`);
       }
     });
 
-    test('routes findings with confidence < 95% to human-review tier', () => {
+    test('routes findings with confidence < 80% to human-review tier', () => {
       const humanReview = TRIAGE_ITEMS.filter(item => item.type === 'human-review');
       assert.ok(humanReview.length >= 2, 'Should have at least 2 human-review findings');
 
       for (const item of humanReview) {
         assert.ok(
-          item.confidence < 95.0,
-          `Item ${item.id} (${item.title}) has confidence ${item.confidence} which is >= 95%`
+          item.confidence < 80.0,
+          `Item ${item.id} (${item.title}) has confidence ${item.confidence} which is >= 80%`
         );
         assert.equal(item.canConfirm, true, `Human-review item ${item.id} must be confirmable by operator`);
         assert.ok(item.operatorNote, `Human-review item ${item.id} must have operator warning note`);

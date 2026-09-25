@@ -251,10 +251,10 @@ class SemanticMiniLMEngine:
         # Calibrated confidence formula: (s1 * 0.75) + (margin * 0.25)
         confidence = round((s1 * 0.75) + (margin * 0.25), 3)
 
-        # Triage boundaries
-        if s1 >= 0.70 and margin >= 0.08:
+        # Triage boundaries (aligned with NeuraComply production policy: >=80% AUTO_ACCEPTED, 60-79% HUMAN_REVIEW, <60% REJECTED)
+        if s1 >= 0.80 and margin >= 0.10:
             status = "AUTO_ACCEPTED"
-        elif s1 >= 0.50:
+        elif s1 >= 0.60:
             status = "HUMAN_REVIEW"
         else:
             status = "REJECTED"

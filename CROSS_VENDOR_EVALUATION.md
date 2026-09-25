@@ -28,9 +28,9 @@ Each test case was executed concurrently through:
 
 | Metric | Baseline Heuristic (Regex) | SentenceTransformer (`all-MiniLM-L6-v2`) | NeuraComply Subword Vector ($\mathbb{R}^{128}$) | Measured Impact / Insight |
 | :--- | :---: | :---: | :---: | :---: |
-| **Intent Classification Accuracy** | **58.8%** (20/34) | **61.8%** (21/34) | **100.0%** (34/34) | Subword vector eliminates out-of-vocabulary CLI drops |
+| **Intent Classification Accuracy** | **58.8%** (20/34) | **52.9%** (18/34) | **100.0%** (34/34) | Subword vector eliminates out-of-vocabulary CLI drops |
 | **Cross-Vendor Equivalence Groups** | **0.0%** (Fails on XML/negations) | **81.8%** (9/11 converged) | **100.0%** (11/11 converged) | Canonical convergence across 4 vendor platforms |
-| **Human-in-the-Loop (HITL) Review Rate** | **0.0%** (Silent drops / unhandled) | **61.8%** (21 routed to triage) | **17.6%** (6 routed to triage) | MiniLM safely flags unfamiliar syntax for human sign-off |
+| **Human-in-the-Loop (HITL) Review Rate** | **0.0%** (Silent drops / unhandled) | **58.8%** (20 routed to triage) | **17.6%** (6 routed to triage) | MiniLM safely flags unfamiliar syntax for human sign-off |
 | **Active Learning Knowledge Reuse** | Unsupported | **99.0%** Boosted Confidence | **95.0% - 99.0%** Boosted Confidence | Once verified by SecOps, syntax is remembered forever |
 | **Unmapped Noise Rejection** | Partial (regex false matches) | **100.0%** (Safely rejected) | **100.0%** (Safely rejected) | Zero false positive security mappings |
 | **Execution Latency per Line** | ~0.05 ms | ~15.0 ms (Torch/CPU) | ~0.50 ms (Native JS) | Fast sub-millisecond execution for real-time audit |
@@ -38,7 +38,7 @@ Each test case was executed concurrently through:
 > [!NOTE]
 > - Subword Vector results are produced via `npm run evaluate` (`scripts/evaluateSemanticEngine.js`).
 > - SentenceTransformer results are produced via `npm run evaluate:minilm` (`scripts/semantic_minilm_engine.py`).
-> - The general-purpose `all-MiniLM-L6-v2` transformer model routes 61.8% of cases to HITL because CLI syntax differs from natural English sentences. This is safe, defensible behavior: instead of guessing, uncertain syntax is escalated to human operators.
+> - The general-purpose `all-MiniLM-L6-v2` transformer model routes 58.8% of cases to HITL because CLI syntax differs from natural English sentences. This is safe, defensible behavior: instead of guessing, uncertain syntax is escalated to human operators.
 
 ### B. Target / Future Goals (Clearly Separated)
 
