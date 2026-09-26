@@ -82,7 +82,7 @@ The following capabilities are genuinely built, tested, and operational within t
 - **Active Learning Knowledge Base:** Remembers operator-approved mappings and reuses them with boosted confidence ($\ge 0.95$).
 
 ### I. Standardized Cross-Vendor Evaluation Benchmark
-- **Files:** `evaluation/cross_vendor_cases.json`, `scripts/evaluateSemanticEngine.js` (`npm run evaluate`), `evaluation/evaluation_report.json`
+- **Files:** `scripts/cross_vendor_cases.json`, `scripts/evaluateSemanticEngine.js` (`npm run evaluate`), `scripts/evaluation_report.json`
 - **Capability:** Evaluates 34 multi-vendor cases across Cisco, Juniper, Fortinet, and Palo Alto. Measured: 100.0% (34/34) semantic intent accuracy, 100.0% (11/11) cross-vendor equivalence groups, 17.6% (6/34) HITL review routing rate.
 
 ---

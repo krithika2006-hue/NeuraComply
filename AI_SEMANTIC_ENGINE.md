@@ -177,7 +177,7 @@ All 4 vendors converge to the exact same canonical intent, allowing the **determ
 
 ## 9. Empirical Evaluation Results (Measured, Not Fabricated)
 
-Measured across 34 standardized cross-vendor test cases in `evaluation/cross_vendor_cases.json`:
+Measured across 34 standardized cross-vendor test cases in `scripts/cross_vendor_cases.json`:
 
 | Metric | Baseline Heuristic (Regex) | SentenceTransformer (`all-MiniLM-L6-v2`) | NeuraComply Subword Vector ($\mathbb{R}^{128}$) | Measured Impact / Insight |
 | :--- | :---: | :---: | :---: | :---: |

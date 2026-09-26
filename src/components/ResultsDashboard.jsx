@@ -17,7 +17,8 @@ import {
   Lock,
   ArrowRight,
   Link2,
-  FileText
+  FileText,
+  Cpu
 } from 'lucide-react';
 import { AUDIT_CONTROLS, VENDOR_PRESETS } from '../data/mockData';
 import NetworkTopologyGraphic from './NetworkTopologyGraphic';
@@ -246,6 +247,7 @@ export default function ResultsDashboard({
             <span>View Ledger</span>
             <ArrowRight size={13} />
           </button>
+        </div>
       </div>
 
       {/* Unified Security Schema (USS) & Semantic Intent Normalization Card */}

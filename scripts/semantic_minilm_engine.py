@@ -291,7 +291,7 @@ def run_evaluation_benchmark():
     print("="*80 + "\n")
 
     # Load evaluation dataset
-    dataset_path = os.path.join(os.path.dirname(__file__), "..", "evaluation", "cross_vendor_cases.json")
+    dataset_path = os.path.join(os.path.dirname(__file__), "cross_vendor_cases.json")
     with open(dataset_path, "r") as f:
         cases = json.load(f)
 

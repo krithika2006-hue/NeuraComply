@@ -102,7 +102,7 @@ npm run evaluate
 | **Unmapped Noise Rejection** | Partial (regex false matches) | **100.0%** (Safely rejected) | Zero false-positive security mappings |
 | **Inference Latency per Line** | ~0.05 ms | ~0.50 ms | Sub-millisecond vector inference |
 
-*Full evaluation dataset: [`evaluation/cross_vendor_cases.json`](evaluation/cross_vendor_cases.json)*  
+*Full evaluation dataset: [`scripts/cross_vendor_cases.json`](scripts/cross_vendor_cases.json)*  
 *Full evaluation report: [`CROSS_VENDOR_EVALUATION.md`](CROSS_VENDOR_EVALUATION.md)*
 
 ---

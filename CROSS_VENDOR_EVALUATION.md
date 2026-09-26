@@ -1,5 +1,5 @@
 # NeuraComply: Cross-Vendor Evaluation Report
-**Benchmark File:** `evaluation/cross_vendor_cases.json`  
+**Benchmark File:** `scripts/cross_vendor_cases.json`  
 **Execution Script:** `npm run evaluate` (`scripts/evaluateSemanticEngine.js`)  
 **Evaluation Date:** September 2026  
 **Status:** 100% Empirically Measured (Zero Fabricated Metrics)

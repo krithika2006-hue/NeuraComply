@@ -2,7 +2,7 @@
  * NeuraComply Empirical Evaluation Runner
  *
  * Benchmarks Heuristic (Regex/Substring) parsing vs. Semantic Intent Normalization
- * against the standardized cross-vendor dataset (evaluation/cross_vendor_cases.json).
+ * against the standardized cross-vendor dataset (scripts/cross_vendor_cases.json).
  *
  * Measures genuine empirical metrics without fabrication.
  */
@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load evaluation dataset
-const datasetPath = path.resolve(__dirname, '../evaluation/cross_vendor_cases.json');
+const datasetPath = path.resolve(__dirname, 'cross_vendor_cases.json');
 const testCases = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
 
 /**
@@ -167,7 +167,7 @@ for (const demo of sshCases) {
 }
 
 // Save detailed report
-const reportPath = path.resolve(__dirname, '../evaluation/evaluation_report.json');
+const reportPath = path.resolve(__dirname, 'evaluation_report.json');
 fs.writeFileSync(reportPath, JSON.stringify({
   timestamp: new Date().toISOString(),
   totalCases,

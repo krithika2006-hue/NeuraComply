@@ -371,7 +371,7 @@ graph TB
     STATE --> PULL["PullQuote.jsx<br/>• Testimonial quote"]
     STATE --> UPLOAD["UploadScanSection.jsx<br/>• Vendor preset grid (4 presets)<br/>• File upload (drag & drop)<br/>• Real sample config picker (5 files)<br/>• 4-phase scan animation<br/>• AST tree preview"]
     STATE --> DASH["ResultsDashboard.jsx<br/>• Compliance score gauge<br/>• Controls table (pass/warn/violation)<br/>• What-If remediation toggle<br/>• Offending snippet viewer"]
-    STATE --> TRIAGE_C["ConfidenceTriageView.jsx<br/>• Auto-resolved items (≥95% conf.)<br/>• Human-review items (&lt;95% conf.)<br/>• Operator confirm action<br/>• Remediation/rollback scripts"]
+    STATE --> TRIAGE_C["ConfidenceTriageView.jsx<br/>• Auto-resolved items (≥80% conf.)<br/>• Human-review items (&lt;80% conf.)<br/>• Operator confirm action<br/>• Remediation/rollback scripts"]
     STATE --> LEDGER_C["AuditLedgerView.jsx<br/>• Block explorer table<br/>• Block detail expander<br/>• Hash verification animation<br/>• Fabric topology display<br/>• Chaincode info panel"]
     STATE --> REPORT_M["ReportModal.jsx<br/>• Executive summary PDF<br/>• Framework compliance stats"]
     STATE --> GAUTH["GoogleAuthModal.jsx<br/>• Google SSO simulation<br/>• Organization & role selection"]
@@ -388,8 +388,8 @@ The triage system classifies findings into two categories based on **AI confiden
 ```mermaid
 flowchart TD
     FINDING["Compliance Finding"] --> SCORE{"Confidence<br/>Score?"}
-    SCORE -->|"≥ 95%"| AUTO["🤖 Auto-Resolved<br/>(No human intervention)"]
-    SCORE -->|"< 95%"| HUMAN["👤 Human-Review Required<br/>(Operator sign-off needed)"]
+    SCORE -->|"≥ 80%"| AUTO["🤖 Auto-Resolved<br/>(No human intervention)"]
+    SCORE -->|"< 80%"| HUMAN["👤 Human-Review Required<br/>(Operator sign-off needed)"]
 
     AUTO --> STAGED["Remediation Script Staged<br/>+ Rollback Script Preserved"]
     HUMAN --> WAIT["Awaiting Operator Sign-Off"]
@@ -404,7 +404,7 @@ flowchart TD
 | TR-101 | CIS-2.1.4 (Telnet) | 99.4% | Auto-resolved | Unambiguous AST match, zero blast radius |
 | TR-102 | CIS-1.2.1 (SNMP) | 98.7% | Auto-resolved | Exact CVE/CWE dictionary match |
 | TR-103 | CIS-2.2.2 (HTTP) | 97.5% | Auto-resolved | Deterministic AST confirmation |
-| TR-201 | CIS-4.2.1 (ACL) | 84.2% | Human-review | Semantic ambiguity in subnet allocation |
+| TR-201 | CIS-4.2.1 (ACL) | 78.2% | Human-review | Semantic ambiguity in subnet allocation |
 | TR-202 | CIS-3.1.2 (OSPF) | 76.8% | Human-review | Route flap risk requires coordination |
 
 ---
@@ -489,7 +489,7 @@ A **fast-forward** option skips the animation and loads results instantly.
 | **Dual ledger services** | `auditLedgerService.js` (generic hash chain) exists alongside `hyperledgerFabricService.js` (Fabric-specific) — the app uses the Fabric service |
 | **Lifted state in App.jsx** | Single component manages all global state; no external state library (Redux/Zustand) needed for this scope |
 | **Vendor detection via heuristics** | Simple keyword/pattern matching avoids needing ANTLR4 grammar parsers in the browser |
-| **Confidence-based triage** | Unique differentiator: findings above 95% confidence auto-resolve; below 95% require human sign-off to prevent dangerous auto-remediation |
+| **Confidence-based triage** | Unique differentiator: findings at or above 80% confidence (and 10% margin) auto-resolve; below 80% require human sign-off to prevent dangerous auto-remediation |
 | **Web Crypto API for checksums** | Uses `crypto.subtle.digest('SHA-256')` for real checksums with a fallback hash for environments without Web Crypto |
 
 ---
